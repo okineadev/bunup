@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "bun:test";
+import { beforeEach, describe, expect, it } from "vitest";
 import { cleanProjectDir, createProject, findFile, runCli } from "./utils";
 
 describe("CLI Only Options", () => {
@@ -81,7 +81,7 @@ describe("CLI Only Options", () => {
             `,
             "src/utils/helpers.ts": `
                 export * from '../services/api';
-                
+
                 export const formatData = (data: any): { formatted: any } => {
                     return { formatted: data };
                 };
@@ -91,7 +91,7 @@ describe("CLI Only Options", () => {
                 export function missingReturnType() {
                     return { name: "test", status: "active" };
                 }
-                
+
                 export function fetchData(url: string) {
                     return Promise.resolve({ data: "test data" });
                 }
