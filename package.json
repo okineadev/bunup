@@ -46,7 +46,7 @@
         "prepare": "husky",
         "fetch-latest-dep-versions": "pnpm -C create-bunup fetch-latest-dep-versions"
     },
-    "packageManager": "pnpm@10.8.1",
+    "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
         "chokidar": "^4.0.3",
         "coffi": "^0.1.23",
