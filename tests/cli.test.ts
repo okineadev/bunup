@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "bun:test";
 import { cleanProjectDir, createProject, findFile, runCli } from "./utils";
 
 describe("CLI Only Options", () => {
