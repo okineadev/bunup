@@ -49,8 +49,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       bunup:
-        specifier: ^0.4.23
-        version: 0.4.35(typescript@5.8.3)
+        specifier: workspace:*
+        version: 'link:'
       create-bunup:
         specifier: workspace:*
         version: link:create-bunup
@@ -1657,15 +1657,6 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.18'
-
-  bunup@0.4.35:
-    resolution: {integrity: sha512-a1z7iwUPZ852a7pMGn6+1lro9HlSLJdP5pBDzmIcmVc0gaviAWih4aatwcZ+22vDgjRfebWLE5OOJVtZqaH85w==}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=4.5.0'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   byte-size@9.0.1:
     resolution: {integrity: sha512-YLe9x3rabBrcI0cueCdLS2l5ONUKywcRpTs02B8KP9/Cimhj7o3ZccGrPnRvcbyHMbb7W79/3MUJl7iGgTXKEw==}
@@ -4854,22 +4845,6 @@ snapshots:
     dependencies:
       esbuild: 0.25.2
       load-tsconfig: 0.2.5
-
-  bunup@0.4.35(typescript@5.8.3):
-    dependencies:
-      chokidar: 4.0.3
-      coffi: 0.1.23
-      oxc-resolver: 5.2.0
-      oxc-transform: 0.58.1
-      rolldown: 1.0.0-beta.7(typescript@5.8.3)
-      rolldown-plugin-dts: 0.7.0(rolldown@1.0.0-beta.7(typescript@5.8.3))(typescript@5.8.3)
-      tinyexec: 1.0.1
-      ts-import-resolver: 0.1.10(typescript@5.8.3)
-    optionalDependencies:
-      typescript: 5.8.3
-    transitivePeerDependencies:
-      - '@oxc-project/runtime'
-      - supports-color
 
   byte-size@9.0.1: {}
 

@@ -36,7 +36,7 @@
         "@commitlint/config-conventional": "^19.5.0",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "^0.4.23",
+        "bunup": "workspace:*",
         "create-bunup": "workspace:*",
         "husky": "^9.1.7",
         "typescript": "^5.8.3"
