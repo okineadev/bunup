@@ -52,7 +52,7 @@ importers:
         specifier: ^0.4.23
         version: 0.4.35(typescript@5.8.3)
       create-bunup:
-        specifier: workspace:*
+        specifier: workspace:create-bunup
         version: link:create-bunup
       husky:
         specifier: ^9.1.7
