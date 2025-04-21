@@ -1,9 +1,25 @@
 {
     "name": "bunup",
+    "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
     "version": "0.4.52",
-    "description": "A blazing-fast build tool for your libraries built with Bun.",
-    "main": "./dist/index.js",
+    "license": "MIT",
+    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+    "maintainers": [
+        {
+            "name": "Arshad Yaseen",
+            "email": "m@arshadyaseen.com",
+            "url": "https://arshadyaseen.com"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arshad-yaseen/bunup.git"
+    },
+    "homepage": "https://bunup.dev",
+    "funding": "https://github.com/sponsors/arshad-yaseen",
+    "keywords": ["bun", "bunup", "bun-bundler"],
     "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "files": ["dist"],
     "bin": {
@@ -30,6 +46,25 @@
         "prepare": "husky",
         "fetch-latest-dep-versions": "pnpm -C create-bunup fetch-latest-dep-versions"
     },
+    "packageManager": "pnpm@10.8.1",
+    "dependencies": {
+        "chokidar": "^4.0.3",
+        "coffi": "^0.1.23",
+        "oxc-resolver": "^5.0.1",
+        "oxc-transform": "^0.58.1",
+        "rolldown": "1.0.0-beta.7",
+        "rolldown-plugin-dts": "^0.7.0",
+        "tinyexec": "^1.0.1",
+        "ts-import-resolver": "^0.1.10"
+    },
+    "peerDependencies": {
+        "typescript": ">=4.5.0"
+    },
+    "peerDependenciesMeta": {
+        "typescript": {
+            "optional": true
+        }
+    },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@commitlint/cli": "^19.5.0",
@@ -40,39 +75,5 @@
         "create-bunup": "workspace:create-bunup",
         "husky": "^9.1.7",
         "typescript": "^5.8.3"
-    },
-    "peerDependencies": {
-        "typescript": ">=4.5.0"
-    },
-    "peerDependenciesMeta": {
-        "typescript": {
-            "optional": true
-        }
-    },
-    "keywords": ["bun", "bunup", "bun-bundler"],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/arshad-yaseen/bunup.git"
-    },
-    "homepage": "https://bunup.dev",
-    "maintainers": [
-        {
-            "name": "Arshad Yaseen",
-            "email": "m@arshadyaseen.com",
-            "url": "https://arshadyaseen.com"
-        }
-    ],
-    "packageManager": "pnpm@10.8.1",
-    "license": "MIT",
-    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-    "dependencies": {
-        "chokidar": "^4.0.3",
-        "coffi": "^0.1.23",
-        "oxc-resolver": "^5.0.1",
-        "oxc-transform": "^0.58.1",
-        "rolldown": "1.0.0-beta.7",
-        "rolldown-plugin-dts": "^0.7.0",
-        "tinyexec": "^1.0.1",
-        "ts-import-resolver": "^0.1.10"
     }
 }

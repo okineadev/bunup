@@ -1,20 +1,9 @@
 {
     "name": "create-bunup",
+    "description": "Quickly scaffold a new TypeScript package with Bunup",
     "version": "0.4.52",
-    "files": ["dist"],
-    "bin": {
-        "create-bunup": "dist/index.mjs"
-    },
-    "scripts": {
-        "fetch-latest-dep-versions": "bun run fetch-latest-dep-versions.ts && biome format --write src/latest-dep-versions.json"
-    },
-    "description": "Quickly scaffold a new TypeScript package with Bunup.",
-    "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/arshad-yaseen/bunup.git"
-    },
-    "homepage": "https://bunup.dev/typescript-library-starter",
+    "license": "MIT",
+    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "maintainers": [
         {
             "name": "Arshad Yaseen",
@@ -22,9 +11,21 @@
             "url": "https://arshadyaseen.com"
         }
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arshad-yaseen/bunup.git"
+    },
+    "homepage": "https://bunup.dev/typescript-library-starter",
+    "funding": "https://github.com/sponsors/arshad-yaseen",
+    "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
+    "files": ["dist"],
+    "bin": {
+        "create-bunup": "dist/index.mjs"
+    },
+    "scripts": {
+        "fetch-latest-dep-versions": "bun run fetch-latest-dep-versions.ts && biome format --write src/latest-dep-versions.json"
+    },
     "packageManager": "pnpm@9.15.9",
-    "license": "MIT",
-    "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "dependencies": {
         "@clack/prompts": "^0.7.0",
         "picocolors": "^1.1.1"
