@@ -1,44 +1,50 @@
-name: CI
+name: 🔄️ CI
 on:
-      push:
-            branches:
-                  - 'main'
-      pull_request: {}
+  push:
+    branches:
+      - 'main'
+  pull_request: {}
+
+permissions: {}
 
 jobs:
-      ci:
-            strategy:
-                  matrix:
-                        os: [ubuntu-latest, macos-latest]
-                        node-version: [20.x]
-            runs-on: ${{ matrix.os }}
-            steps:
-                  - name: Checkout repository
-                    uses: actions/checkout@v4
+  ci:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node-version: [20.x]
 
-                  - name: Setup Node.js
-                    uses: actions/setup-node@v4
-                    with:
-                          node-version: ${{ matrix.node-version }}
-                          
-                  - name: Setup Bun
-                    uses: oven-sh/setup-bun@v1
-                    with:
-                          bun-version: latest
+    runs-on: ${{ matrix.os }}
 
-                  - name: Install pnpm
-                    uses: pnpm/action-setup@v2
-                    with:
-                          version: latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-                  - name: Install dependencies
-                    run: pnpm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-                  - name: Run CI
-                    run: pnpm tsc && pnpm lint && pnpm format
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
 
-                  - name: Build
-                    run: pnpm build
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
 
-                  - name: Run tests
-                    run: pnpm test
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run CI
+        run: pnpm tsc && pnpm lint && pnpm format
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test

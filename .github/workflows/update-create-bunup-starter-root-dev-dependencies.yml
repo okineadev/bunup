@@ -1,4 +1,4 @@
-name: Update Starter Root Dev Dependencies
+name: ⏫ Update Starter Root Dev Dependencies
 
 on:
   schedule:

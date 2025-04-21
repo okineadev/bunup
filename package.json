@@ -18,12 +18,12 @@
     "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bun", "bunup", "bun-bundler"],
-    "types": "./build/index.d.ts",
-    "main": "./build/index.js",
-    "module": "./build/index.mjs",
-    "files": ["build"],
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "files": ["dist"],
     "bin": {
-        "bunup": "./build/cli.mjs"
+        "bunup": "./dist/cli.mjs"
     },
     "scripts": {
         "build": "bunup",

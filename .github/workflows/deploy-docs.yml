@@ -1,56 +1,62 @@
-name: Deploy Documentation
+name: 📄 Deploy Documentation
 
 on:
-      push:
-            branches: [main]
+  push:
+    branches: [main]
 
-      workflow_dispatch:
+  workflow_dispatch:
 
-permissions:
-      contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 🛠️ Build
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build:docs
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    name: 🚀 Deploy
+
+    permissions:
       pages: write
       id-token: write
 
-concurrency:
-      group: pages
-      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-jobs:
-      build:
-            runs-on: ubuntu-latest
-            steps:
-                  - name: Checkout
-                    uses: actions/checkout@v4
-                    with:
-                          fetch-depth: 0
-                  - name: Setup pnpm
-                    uses: pnpm/action-setup@v2
-                    with:
-                          version: 8
-                  - name: Setup Node
-                    uses: actions/setup-node@v4
-                    with:
-                          node-version: 20
-                          cache: 'pnpm'
-                  - name: Setup Pages
-                    uses: actions/configure-pages@v4
-                  - name: Install dependencies
-                    run: pnpm install
-                  - name: Build
-                    run: pnpm build:docs
-                  - name: Upload artifact
-                    uses: actions/upload-pages-artifact@v3
-                    with:
-                          path: docs/.vitepress/dist
-
-      deploy:
-            environment:
-                  name: github-pages
-                  url: ${{ steps.deployment.outputs.page_url }}
-            needs: build
-            runs-on: ubuntu-latest
-            name: Deploy
-            steps:
-                  - name: Deploy to GitHub Pages
-                    id: deployment
-                    uses: actions/deploy-pages@v4
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

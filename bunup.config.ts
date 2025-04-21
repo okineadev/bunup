@@ -1,7 +1,7 @@
 import { type DefineConfigItem, defineWorkspace } from "bunup";
 
 const COMMON_OPTIONS: Partial<DefineConfigItem> = {
-    outDir: "build",
+    outDir: "dist",
     minify: true,
     splitting: false,
 };

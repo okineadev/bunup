@@ -3,14 +3,13 @@ import {
     groupIconMdPlugin,
     groupIconVitePlugin,
 } from "vitepress-plugin-group-icons";
-import llmstxt from 'vitepress-plugin-llms'
+import llmstxt from "vitepress-plugin-llms";
 
 import { version } from "../../package.json";
 
 export default defineConfig({
     title: "Bunup",
-    description:
-        "A blazing-fast build tool for your libraries built with Bun.",
+    description: "A blazing-fast build tool for your libraries built with Bun.",
     themeConfig: {
         logo: "/logo.png",
         nav: [
@@ -34,20 +33,20 @@ export default defineConfig({
         ],
         sidebar: [
             {
-                text: 'Guide',
+                text: "Guide",
                 items: [
-                    { text: 'Documentation', link: '/documentation' },
-                    { text: 'Workspaces', link: '/workspaces' },
-                    { text: 'CLI Options', link: '/cli-options' }
-                ]
+                    { text: "Documentation", link: "/documentation" },
+                    { text: "Workspaces", link: "/workspaces" },
+                    { text: "CLI Options", link: "/cli-options" },
+                ],
             },
             {
-                text: 'Plugins',
+                text: "Plugins",
                 items: [
-                    { text: 'Introduction', link: '/plugins' },
-                    { text: 'Built-in Plugins', link: '/plugins/built-in' }
-                ]
-            }
+                    { text: "Introduction", link: "/plugins" },
+                    { text: "Built-in Plugins", link: "/plugins/built-in" },
+                ],
+            },
         ],
         editLink: {
             pattern:
