@@ -1,7 +1,17 @@
-# bunup
+<!-- markdownlint-disable first-line-h1 -->
 
-[![npm version](https://img.shields.io/npm/v/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
-[![npm downloads](https://img.shields.io/npm/dm/bunup.svg?style=flat-square)](https://www.npmjs.com/package/bunup)
+<!-- markdownlint-start-capture -->
+<!-- markdownlint-disable-file no-inline-html -->
+<div align="center">
+
+  <!-- markdownlint-disable-next-line no-alt-text -->
+  ![](assets/bunup-logo.svg)
+
+  ![Bunup](assets/bunup-title-gradient.svg)
+
+  [![NPM Downloads](https://img.shields.io/npm/dm/bunup?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSIyNHB4IiBmaWxsPSIjMDAwMDAwIj48cGF0aCBkPSJNNDgwLTMyMCAyODAtNTIwbDU2LTU4IDEwNCAxMDR2LTMyNmg4MHYzMjZsMTA0LTEwNCA1NiA1OC0yMDAgMjAwWk0xNjAtMTYwdi0yMDBoODB2MTIwaDQ4MHYtMTIwaDgwdjIwMEgxNjBaIi8%2BPC9zdmc%2B&labelColor=ffc44e&color=212121)](https://www.npmjs.com/package/bunup) [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup) [![Tests Status](https://img.shields.io/github/actions/workflow/status/arshad-yaseen/bunup/ci.yml?label=tests&labelColor=212121)](https://github.com/arshad-yaseen/bunup/actions/workflows/ci.yml) [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh) [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome&labelColor=212121)](https://biomejs.dev/) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
+</div>
+<!-- markdownlint-restore -->
 
 Bunup is the **blazing-fast build tool** for TypeScript and JavaScript libraries, designed for beautiful developer experience and speed, **powered by Bun's native bundler** — up to **~50× faster than Tsup**.
 
