@@ -11,7 +11,7 @@ export default defineConfig({
     title: "Bunup",
     description: "A blazing-fast build tool for your libraries built with Bun.",
     themeConfig: {
-        logo: "/logo.png",
+        logo: "/logo.svg",
         nav: [
             {
                 text: "Typescript Library Starter",
@@ -68,7 +68,7 @@ export default defineConfig({
     },
     head: [
         ["meta", { name: "theme-color", content: "#ffffff" }],
-        ["link", { rel: "icon", href: "/favicon.ico" }],
+        ["link", { rel: "icon", href: "/logo.svg" }],
         ["meta", { name: "author", content: "Arshad Yaseen" }],
         ["meta", { property: "og:title", content: "Bunup" }],
         [

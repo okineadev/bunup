@@ -5,7 +5,7 @@
 <div align="center">
 
   <!-- markdownlint-disable-next-line no-alt-text -->
-  ![](assets/bunup-logo.svg)
+  ![](https://bunup.dev/logo.svg)
 
   ![Bunup](assets/bunup-title-gradient.svg)
 

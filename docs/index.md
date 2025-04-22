@@ -29,7 +29,7 @@ features:
       Build multiple packages in one config file and with a single command.
   - title: Bun Native
     icon:
-      src: /bun.svg
+      src: https://bun.sh/logo.svg
     details: |
       First-class bundling support for libraries built with Bun.
 ---
@@ -88,7 +88,7 @@ import WithinHero from "/components/WithinHero.vue";
   width: 100%;
   border-collapse: collapse;
 }
-.benchmark-table th, 
+.benchmark-table th,
 .benchmark-table td {
   padding: 0.75rem;
   text-align: left;
