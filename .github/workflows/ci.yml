@@ -1,8 +1,30 @@
 name: 🔄️ CI
+
 on:
+  # https://blog.esciencecenter.nl/reduce-reuse-recycle-save-the-planet-one-github-action-at-a-time-4ab602255c3f
   push:
-    branches: [main]
+    paths:
+      - .github/workflows/
+      - src/
+      - tests/
+      - package.json
+      - bun.lock
+      - bunup.config.ts
+      - tsconfig*.json
+      - '!**/*.md'
+
   pull_request:
+    paths:
+      - .github/workflows/
+      - src/
+      - tests/
+      - package.json
+      - bun.lock
+      - bunup.config.ts
+      - tsconfig*.json
+      - '!**/*.md'
+
+  workflow_dispatch:
 
 permissions: {}
 

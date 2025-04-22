@@ -2,6 +2,9 @@ name: 📄 Deploy Documentation
 
 on:
   push:
+    paths:
+      - docs/**
+      - .github/workflows/deploy-docs.yml
     branches: [main]
 
   workflow_dispatch:
@@ -12,6 +15,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.repository == 'arshad-yaseen/bunup'
     name: 🛠️ Build
     permissions: {}
     runs-on: ubuntu-latest
