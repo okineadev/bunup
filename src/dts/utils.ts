@@ -4,7 +4,7 @@ import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
 
 const JSTS_REGEX = /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/;
 
-export function isDtsFile(filePath: string): boolean {
+function isDtsFile(filePath: string): boolean {
     return (
         filePath.endsWith(".d.ts") ||
         filePath.endsWith(".d.mts") ||

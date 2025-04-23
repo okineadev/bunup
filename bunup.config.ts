@@ -35,4 +35,19 @@ export default defineWorkspace([
             },
         ],
     },
+    {
+        name: "plugins",
+        root: ".",
+        config: [
+            {
+                ...COMMON_OPTIONS,
+                entry: {
+                    plugins: "src/plugins/built-in/index.ts",
+                },
+                format: ["esm", "cjs"],
+                target: "bun",
+                dts: true,
+            },
+        ],
+    },
 ]);

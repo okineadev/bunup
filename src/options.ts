@@ -7,19 +7,19 @@ import type {
     WithRequired,
 } from "./types";
 
-export type Loader = NonNullable<BunBuildOptions["loader"]>[string];
+type Loader = NonNullable<BunBuildOptions["loader"]>[string];
 
-export type Define = BunBuildOptions["define"];
+type Define = BunBuildOptions["define"];
 
-export type Sourcemap = BunBuildOptions["sourcemap"];
+type Sourcemap = BunBuildOptions["sourcemap"];
 
 export type Format = Exclude<BunBuildOptions["format"], undefined>;
 
 export type Target = BunBuildOptions["target"];
 
-export type External = (string | RegExp)[];
+type External = (string | RegExp)[];
 
-export type Env = BunBuildOptions["env"] | Record<string, string>;
+type Env = BunBuildOptions["env"] | Record<string, string>;
 
 export type Entry = Arrayable<string> | Record<string, string>;
 
@@ -38,7 +38,7 @@ export type Shims = boolean | ShimOptions;
 
 export type DtsResolve = boolean | (string | RegExp)[];
 
-export type DtsOptions = {
+type DtsOptions = {
     /**
      * Entry point files for TypeScript declaration file generation
      *
@@ -437,7 +437,7 @@ export type CliOptions = BuildOptions & {
     onSuccess?: string;
 };
 
-export const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
+const DEFAULT_OPTIONS: WithRequired<BuildOptions, "clean"> = {
     entry: [],
     format: ["cjs"],
     outDir: "dist",

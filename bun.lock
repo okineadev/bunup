@@ -44,7 +44,7 @@
     },
     "create-bunup": {
       "name": "create-bunup",
-      "version": "0.4.64",
+      "version": "0.4.66",
       "bin": {
         "create-bunup": "dist/index.mjs",
       },

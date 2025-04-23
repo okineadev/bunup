@@ -1,7 +1,7 @@
 {
     "name": "bunup",
     "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.4.66",
+    "version": "0.4.67",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
     "maintainers": [
@@ -21,6 +21,18 @@
     "types": "./dist/index.d.ts",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        },
+        "./plugins": {
+            "types": "./dist/plugins.d.ts",
+            "import": "./dist/plugins.mjs",
+            "require": "./dist/plugins.js"
+        }
+    },
     "files": ["dist"],
     "bin": {
         "bunup": "./dist/cli.mjs"

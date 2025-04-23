@@ -24,7 +24,11 @@ import {
 } from "./options";
 import { externalPlugin } from "./plugins/internal/external";
 import { injectShimsPlugin } from "./plugins/internal/shims";
-import { filterBunPlugins } from "./plugins/utils";
+import {
+    filterBunupBunPlugins,
+    runAfterBuildHooks,
+    runBeforeBuildHooks,
+} from "./plugins/utils";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
@@ -65,6 +69,8 @@ export async function build(
         });
     }
 
+    await runBeforeBuildHooks(options.plugins, options);
+
     const processableEntries = normalizeEntryToProcessableEntries(
         options.entry,
     );
@@ -72,9 +78,11 @@ export async function build(
     const packageType = packageJson?.type as string | undefined;
 
     if (!options.dtsOnly) {
-        const plugins = [
+        const plugins: BunPlugin[] = [
             externalPlugin(options, packageJson),
-            ...filterBunPlugins(options.plugins ?? []),
+            ...filterBunupBunPlugins(options.plugins ?? []).map(
+                (p) => p.plugin,
+            ),
         ];
 
         const buildPromises = options.format.flatMap((fmt) =>
@@ -168,6 +176,11 @@ export async function build(
             throw new BunupDTSBuildError(parseErrorMessage(error));
         }
     }
+
+    await runAfterBuildHooks(options.plugins, {
+        outDir: options.outDir,
+        formats: options.format,
+    });
 
     if (options.onBuildSuccess) {
         await options.onBuildSuccess(options);
