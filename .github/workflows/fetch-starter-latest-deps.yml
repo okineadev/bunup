@@ -12,27 +12,27 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Setup Bun
+      - name: 🛠️ Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: bun install
 
-      - name: Fetch latest dependency versions
+      - name: 📥 Fetch latest dependency versions
         run: bun run fetch-latest-dep-versions
 
-      - name: Build packages
+      - name: 🛠️ Build packages
         run: bun run build
 
-      - name: Check for changes
+      - name: 🔍 Check for changes
         id: check_changes
         run: |
           if [[ $(git status --porcelain) ]]; then
@@ -41,19 +41,19 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup Git user
+      - name: 🔧 Configure Git
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git config --global user.name "GitHub Actions Bot"
+          git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit changes
+      - name: 💾 Commit changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
           git add .
           git commit -m "chore: update starter root dev dependencies"
 
-      - name: Release
+      - name: 🚀 Release
         if: steps.check_changes.outputs.changes == 'true'
         run: bun run release:ci
         env:

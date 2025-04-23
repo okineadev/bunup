@@ -21,7 +21,7 @@ interface ShimConfig {
 
 const JS_TS_FILE_PATTERN = /\.(js|ts|jsx|tsx|mts|cts)$/;
 
-export const registry: Record<keyof ShimOptions, ShimConfig> = {
+const registry: Record<keyof ShimOptions, ShimConfig> = {
     dirnameFilename: {
         appliesTo: (format, target) =>
             format === "esm" && isNodeCompatibleTarget(target),

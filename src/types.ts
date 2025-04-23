@@ -4,15 +4,14 @@ import type { BuildOptions } from "./options";
 
 export type MaybePromise<T> = Promise<T> | T;
 
-export type WithOptional<T, K extends keyof T> = Omit<T, K> &
-    Partial<Pick<T, K>>;
+type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type WithRequired<T, K extends keyof T> = Omit<T, K> &
     Required<Pick<T, K>>;
 
 export type Arrayable<T> = T | T[];
 
-export type Bun = typeof _Bun;
+type Bun = typeof _Bun;
 export type BunBuildOptions = Parameters<Bun["build"]>[0];
 export type BunPlugin = Exclude<BunBuildOptions["plugins"], undefined>[number];
 

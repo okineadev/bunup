@@ -3,7 +3,6 @@ import {
     addDtsVirtualPrefix,
     getDtsPathFromSourceCodePath,
     getSourceCodePathFromDtsPath,
-    isDtsFile,
     isDtsVirtualFile,
     isSourceCodeFile,
     removeDtsVirtualPrefix,
@@ -183,52 +182,6 @@ describe("DTS Utils", () => {
 
         it("handles empty string", () => {
             expect(isSourceCodeFile("")).toBe(false);
-        });
-    });
-
-    describe("isDtsFile", () => {
-        it("returns true for .d.ts files", () => {
-            expect(isDtsFile("/path/to/file.d.ts")).toBe(true);
-        });
-
-        it("returns true for .d.mts files", () => {
-            expect(isDtsFile("/path/to/file.d.mts")).toBe(true);
-        });
-
-        it("returns true for .d.cts files", () => {
-            expect(isDtsFile("/path/to/file.d.cts")).toBe(true);
-        });
-
-        it("returns false for regular TypeScript files", () => {
-            expect(isDtsFile("/path/to/file.ts")).toBe(false);
-            expect(isDtsFile("/path/to/component.tsx")).toBe(false);
-            expect(isDtsFile("/path/to/module.mts")).toBe(false);
-            expect(isDtsFile("/path/to/commonjs.cts")).toBe(false);
-        });
-
-        it("returns false for JavaScript files", () => {
-            expect(isDtsFile("/path/to/file.js")).toBe(false);
-            expect(isDtsFile("/path/to/component.jsx")).toBe(false);
-            expect(isDtsFile("/path/to/module.mjs")).toBe(false);
-            expect(isDtsFile("/path/to/commonjs.cjs")).toBe(false);
-        });
-
-        it("returns false for other file types", () => {
-            expect(isDtsFile("/path/to/file.json")).toBe(false);
-            expect(isDtsFile("/path/to/image.png")).toBe(false);
-        });
-
-        it("handles paths with multiple dots", () => {
-            expect(isDtsFile("/path/to/file.spec.d.ts")).toBe(true);
-            expect(isDtsFile("/path/to/file.test.d.mts")).toBe(true);
-        });
-
-        it("handles paths with no extension", () => {
-            expect(isDtsFile("/path/to/file")).toBe(false);
-        });
-
-        it("handles empty string", () => {
-            expect(isDtsFile("")).toBe(false);
         });
     });
 

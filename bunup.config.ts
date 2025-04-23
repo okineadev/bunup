@@ -4,6 +4,7 @@ const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     outDir: "dist",
     minify: true,
     splitting: false,
+    target: "bun",
 };
 
 export default defineWorkspace([
@@ -32,6 +33,20 @@ export default defineWorkspace([
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
                 format: ["esm"],
+            },
+        ],
+    },
+    {
+        name: "plugins",
+        root: ".",
+        config: [
+            {
+                ...COMMON_OPTIONS,
+                entry: {
+                    plugins: "src/plugins/built-in/index.ts",
+                },
+                format: ["esm", "cjs"],
+                dts: true,
             },
         ],
     },

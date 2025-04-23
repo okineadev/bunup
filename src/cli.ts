@@ -65,7 +65,10 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
 
     const buildTimeMs = performance.now() - startTime;
     const timeDisplay = formatTime(buildTimeMs);
-    logger.cli(`⚡️ Build completed in ${timeDisplay}`);
+
+    if (process.exitCode !== 1) {
+        logger.cli(`⚡️ Build completed in ${timeDisplay}`);
+    }
 
     await validateDtsFiles();
 
@@ -84,7 +87,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     }
 
     if (!cliOptions.watch) {
-        process.exit(0);
+        process.exit(process.exitCode ?? 0);
     }
 }
 
