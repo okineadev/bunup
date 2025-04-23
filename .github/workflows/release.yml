@@ -13,21 +13,28 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Bun
+      - name: 🛠️ Setup Bun
         uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
 
-      - run: bun install --frozen-lockfile
-      - run: bun run build
-      - run: bunx changelogithub
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🛠️ Build
+        run: bun run build
+
+      - name: 📜 Generate changelog
+        run: bunx changelogithub
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: bun run publish:ci
+      - name: 🚀 Release
+        run: bun run publish:ci
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
