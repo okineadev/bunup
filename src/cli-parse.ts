@@ -1,3 +1,4 @@
+import pc from "picocolors";
 import { version } from "../package.json";
 import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
@@ -67,7 +68,7 @@ function showHelp(): void {
         "\nBunup - ⚡️ A blazing-fast build tool for your libraries built with Bun.\n",
     );
     console.log("For more information on available options, visit:");
-    console.log(`\x1b[36m\x1b[4m${BUNUP_CLI_OPTIONS_URL}\x1b[0m\n`);
+    console.log(`${pc.cyan(pc.underline(BUNUP_CLI_OPTIONS_URL))}\n`);
     process.exit(0);
 }
 

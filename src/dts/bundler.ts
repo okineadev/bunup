@@ -1,3 +1,5 @@
+import { build } from "rolldown";
+import { dts } from "rolldown-plugin-dts";
 import { BunupDTSBuildError, parseErrorMessage } from "../errors";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
@@ -11,9 +13,6 @@ import {
 } from "./utils";
 import { gerVirtualFilesPlugin } from "./virtual-files";
 
-const rolldown = import("rolldown");
-const rolldownPluginDts = import("rolldown-plugin-dts");
-
 export async function bundleDts(
     entryFile: string,
     dtsMap: DtsMap,
@@ -22,8 +21,6 @@ export async function bundleDts(
     tsconfig: TsConfigData,
     rootDir: string,
 ): Promise<string> {
-    const build = (await rolldown).build;
-    const dts = (await rolldownPluginDts).dts;
     const entryDtsPath = getDtsPathFromSourceCodePath(entryFile);
     const initialDtsEntry = addDtsVirtualPrefix(entryDtsPath);
 

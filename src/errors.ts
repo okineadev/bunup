@@ -1,6 +1,7 @@
+import pc from "picocolors";
 import { logger } from "./logger";
 
-export class BunupError extends Error {
+class BunupError extends Error {
     constructor(message: string) {
         super(message);
         this.name = "BunupError";
@@ -54,9 +55,14 @@ const KNOWN_ERRORS: KnownErrorSolution[] = [
         errorType: "BUILD ERROR",
         logSolution: () => {
             logger.error(
-                "\x1B[0mYou're trying to build a project that uses Bun. " +
-                    "Please set the target option to \x1B[36m`bun`\x1B[0m.\n" +
-                    "Example: \x1B[32m`bunup --target bun`\x1B[0m or in config: \x1B[32m{ target: 'bun' }\x1B[0m",
+                pc.white("You're trying to build a project that uses Bun. ") +
+                    pc.white("Please set the target option to ") +
+                    pc.cyan("`bun`") +
+                    pc.white(".\n") +
+                    pc.white("Example: ") +
+                    pc.green("`bunup --target bun`") +
+                    pc.white(" or in config: ") +
+                    pc.green("{ target: 'bun' }"),
             );
         },
     },
@@ -86,9 +92,7 @@ export const handleError = (error: unknown, context?: string): void => {
     );
 
     if (!knownError) {
-        console.error(
-            `\x1B[31m${errorType}\x1B[0m ${contextPrefix}${errorMessage}`,
-        );
+        console.error(`${pc.red(errorType)} ${contextPrefix}${errorMessage}`);
     }
 
     if (knownError) {
@@ -97,7 +101,14 @@ export const handleError = (error: unknown, context?: string): void => {
         console.log("\n");
     } else {
         console.error(
-            "\x1B[90mIf you think this is a bug, please open an issue at: \x1B[36mhttps://github.com/arshad-yaseen/bunup/issues/new\x1B[0m",
+            pc.dim(
+                pc.white(
+                    "If you think this is a bug, please open an issue at: ",
+                ) +
+                    pc.cyan(
+                        "https://github.com/arshad-yaseen/bunup/issues/new",
+                    ),
+            ),
         );
     }
 };

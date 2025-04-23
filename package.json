@@ -26,11 +26,6 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
-        },
-        "./plugins": {
-            "types": "./dist/plugins.d.ts",
-            "import": "./dist/plugins.mjs",
-            "require": "./dist/plugins.js"
         }
     },
     "files": ["dist"],
@@ -86,7 +81,7 @@
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "^0.4.65",
+        "bunup": "^0.4.67",
         "create-bunup": "workspace:create-bunup",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.1",

@@ -66,9 +66,7 @@ async function main(args: string[] = Bun.argv.slice(2)): Promise<void> {
     const buildTimeMs = performance.now() - startTime;
     const timeDisplay = formatTime(buildTimeMs);
 
-    if (process.exitCode !== 1) {
-        logger.cli(`⚡️ Build completed in ${timeDisplay}`);
-    }
+    logger.cli(`⚡️ Build completed in ${timeDisplay}`);
 
     await validateDtsFiles();
 

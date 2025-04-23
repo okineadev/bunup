@@ -24,11 +24,7 @@ import {
 } from "./options";
 import { externalPlugin } from "./plugins/internal/external";
 import { injectShimsPlugin } from "./plugins/internal/shims";
-import {
-    filterBunupBunPlugins,
-    runAfterBuildHooks,
-    runBeforeBuildHooks,
-} from "./plugins/utils";
+import { filterBunupBunPlugins } from "./plugins/utils";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
@@ -68,8 +64,6 @@ export async function build(
             once: `${path}:${options.name}`,
         });
     }
-
-    await runBeforeBuildHooks(options.plugins, options);
 
     const processableEntries = normalizeEntryToProcessableEntries(
         options.entry,
@@ -176,11 +170,6 @@ export async function build(
             throw new BunupDTSBuildError(parseErrorMessage(error));
         }
     }
-
-    await runAfterBuildHooks(options.plugins, {
-        outDir: options.outDir,
-        formats: options.format,
-    });
 
     if (options.onBuildSuccess) {
         await options.onBuildSuccess(options);

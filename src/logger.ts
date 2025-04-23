@@ -1,4 +1,5 @@
-type ColorCode = string;
+import pc from "picocolors";
+
 type FormatType = "ESM" | "CJS" | "IIFE" | "DTS" | string;
 
 interface LogOptions {
@@ -10,17 +11,6 @@ interface LogOptions {
 
 interface ProgressOptions extends LogOptions {
     size?: string;
-}
-
-interface LogColors {
-    cli: ColorCode;
-    muted: ColorCode;
-    info: ColorCode;
-    warn: ColorCode;
-    error: ColorCode;
-    progress: Record<FormatType, ColorCode>;
-    default: ColorCode;
-    size: ColorCode;
 }
 
 let silent = false;
@@ -36,20 +26,26 @@ class Logger {
     public readonly MAX_LABEL_LENGTH = 3;
     public readonly MAX_MESSAGE_LENGTH = 25;
 
-    public colors: LogColors = {
-        cli: "147",
-        muted: "245",
-        info: "117",
-        warn: "179",
-        error: "174",
-        progress: {
-            ESM: "172",
-            CJS: "108",
-            IIFE: "146",
-            DTS: "110",
-        },
-        default: "252",
-        size: "65",
+    private cliColor = pc.blue;
+    private mutedColor = pc.dim;
+    private infoColor = pc.cyan;
+    private warnColor = pc.yellow;
+    private errorColor = pc.red;
+    private sizeColor = pc.green;
+    private defaultColor = pc.white;
+
+    private progressFgColorMap: Record<string, (text: string) => string> = {
+        ESM: pc.yellow,
+        CJS: pc.green,
+        IIFE: pc.magenta,
+        DTS: pc.blue,
+    };
+
+    private progressBgColorMap: Record<string, (text: string) => string> = {
+        ESM: pc.bgYellow,
+        CJS: pc.bgGreen,
+        IIFE: pc.bgMagenta,
+        DTS: pc.bgBlue,
     };
 
     public labels = {
@@ -74,24 +70,22 @@ class Logger {
 
     private shouldLog(options?: LogOptions): boolean {
         if (!options?.once) return true;
-
-        if (this.loggedOnceMessages.has(options.once)) {
-            return false;
-        }
-
+        if (this.loggedOnceMessages.has(options.once)) return false;
         this.loggedOnceMessages.add(options.once);
         return true;
     }
 
     public formatMessage({
-        colorCode,
+        fgColor,
+        bgColor,
         label,
         message,
         size,
         identifier,
         muted,
     }: {
-        colorCode: string;
+        fgColor: (text: string) => string;
+        bgColor: (text: string) => string;
         label: string;
         message: string;
         size?: string;
@@ -101,10 +95,7 @@ class Logger {
         const padding = " ".repeat(
             Math.max(0, this.MAX_LABEL_LENGTH - label.length),
         );
-
-        const formattedMessage = muted
-            ? `\x1b[38;5;${this.colors.muted}m${message}\x1b[0m`
-            : message;
+        const formattedMessage = muted ? this.mutedColor(message) : message;
 
         if (size) {
             const [path, ...rest] = formattedMessage.split(" ");
@@ -112,16 +103,15 @@ class Logger {
                 Math.max(0, this.MAX_MESSAGE_LENGTH - path.length),
             );
             const identifierPart = identifier
-                ? ` \x1b[48;5;${colorCode};38;5;0m ${identifier} \x1b[0m`
+                ? ` ${bgColor(pc.black(` "${identifier}" `))}`
                 : "";
-            return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${path}${messagePadding} \x1b[38;5;${this.colors.size}m${size}\x1b[0m ${rest.join(" ")}${identifierPart}`;
+            return `${fgColor(label)} ${padding}${path}${messagePadding} ${this.sizeColor(size)} ${rest.join(" ")}${identifierPart}`;
         }
 
         const identifierPart = identifier
-            ? `   \x1b[48;5;${colorCode};38;5;0m ${identifier} \x1b[0m`
+            ? `   ${bgColor(pc.black(` "${identifier}" `))}`
             : "";
-
-        return `\x1b[38;5;${colorCode}m${label}\x1b[0m ${padding}${formattedMessage}${identifierPart}`;
+        return `${fgColor(label)} ${padding}${formattedMessage}${identifierPart}`;
     }
 
     public output(
@@ -129,10 +119,7 @@ class Logger {
         options: LogOptions = {},
         logFn = console.log,
     ): void {
-        if (silent) return;
-
-        if (!this.shouldLog(options)) return;
-
+        if (silent || !this.shouldLog(options)) return;
         if (options.verticalSpace) console.log("");
         logFn(message);
         if (options.verticalSpace) console.log("");
@@ -140,7 +127,8 @@ class Logger {
 
     public cli(message: string, options: LogOptions = {}): void {
         const formattedMessage = this.formatMessage({
-            colorCode: this.colors.cli,
+            fgColor: this.cliColor,
+            bgColor: pc.bgBlue,
             label: this.labels.cli,
             message,
             identifier: options.identifier,
@@ -151,7 +139,8 @@ class Logger {
 
     public info(message: string, options: LogOptions = {}): void {
         const formattedMessage = this.formatMessage({
-            colorCode: this.colors.info,
+            fgColor: this.infoColor,
+            bgColor: pc.bgCyan,
             label: this.labels.info,
             message,
             identifier: options.identifier,
@@ -162,7 +151,8 @@ class Logger {
 
     public warn(message: string, options: LogOptions = {}): void {
         const formattedMessage = this.formatMessage({
-            colorCode: this.colors.warn,
+            fgColor: this.warnColor,
+            bgColor: pc.bgYellow,
             label: this.labels.warn,
             message,
             identifier: options.identifier,
@@ -173,7 +163,8 @@ class Logger {
 
     public error(message: string, options: LogOptions = {}): void {
         const formattedMessage = this.formatMessage({
-            colorCode: this.colors.error,
+            fgColor: this.errorColor,
+            bgColor: pc.bgRed,
             label: this.labels.error,
             message,
             identifier: options.identifier,
@@ -182,14 +173,26 @@ class Logger {
         this.output(formattedMessage, options, console.error);
     }
 
+    private getProgressFgColor(label: string): (text: string) => string {
+        for (const [key, colorFn] of Object.entries(this.progressFgColorMap)) {
+            if (label.includes(key)) return colorFn;
+        }
+        return this.defaultColor;
+    }
+
+    private getProgressBgColor(label: string): (text: string) => string {
+        for (const [key, colorFn] of Object.entries(this.progressBgColorMap)) {
+            if (label.includes(key)) return colorFn;
+        }
+        return pc.bgWhite;
+    }
+
     public progress(
         label: FormatType,
         message: string,
         sizeOrOptions?: string | ProgressOptions,
         identifier?: string,
     ): void {
-        const labelStr = String(label);
-        let colorCode = this.colors.default;
         let size: string | undefined;
         let actualIdentifier: string | undefined;
         let options: LogOptions = {};
@@ -203,16 +206,13 @@ class Logger {
             options = sizeOrOptions;
         }
 
-        for (const [key, value] of Object.entries(this.colors.progress)) {
-            if (labelStr.includes(key)) {
-                colorCode = value;
-                break;
-            }
-        }
+        const fgColor = this.getProgressFgColor(label);
+        const bgColor = this.getProgressBgColor(label);
 
         const formattedMessage = this.formatMessage({
-            colorCode,
-            label: labelStr,
+            fgColor,
+            bgColor,
+            label,
             message,
             size,
             identifier: actualIdentifier,
