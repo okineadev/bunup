@@ -4,9 +4,9 @@ on:
   # https://blog.esciencecenter.nl/reduce-reuse-recycle-save-the-planet-one-github-action-at-a-time-4ab602255c3f
   push:
     paths:
-      - .github/workflows/
-      - src/
-      - tests/
+      - .github/workflows/**
+      - src/**
+      - tests/**
       - package.json
       - bun.lock
       - bunup.config.ts
@@ -16,8 +16,8 @@ on:
   pull_request:
     paths:
       - .github/workflows/
-      - src/
-      - tests/
+      - src/**
+      - tests/**
       - package.json
       - bun.lock
       - bunup.config.ts
