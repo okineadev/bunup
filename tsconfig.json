@@ -12,6 +12,6 @@
         "resolveJsonModule": true,
         "skipLibCheck": true
     },
-    "include": ["src", "bunup.config.ts"],
+    "include": ["src", "bump.config.ts", "bunup.config.ts"],
     "exclude": ["node_modules", "dist"]
 }

@@ -47,6 +47,10 @@
         "prepare": "husky",
         "fetch-latest-dep-versions": "bun run --cwd create-bunup fetch-latest-dep-versions"
     },
+    "lint-staged": {
+        "*": "bun run format --no-errors-on-unmatched",
+        "src/**/*.(m|c)?(j|t)s|(bump|bunup).config.ts": "bun run tsc"
+    },
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
         "chokidar": "^4.0.3",
@@ -75,6 +79,7 @@
         "bunup": "^0.4.65",
         "create-bunup": "workspace:create-bunup",
         "husky": "^9.1.7",
+        "lint-staged": "^15.5.1",
         "typescript": "^5.8.3"
     }
 }
