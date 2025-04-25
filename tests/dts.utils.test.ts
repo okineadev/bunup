@@ -5,6 +5,7 @@ import {
     getSourceCodePathFromDtsPath,
     isDtsVirtualFile,
     isSourceCodeFile,
+    isTypeScriptSourceCodeFile,
     removeDtsVirtualPrefix,
 } from "../src/dts/utils";
 import { DTS_VIRTUAL_FILE_PREFIX } from "../src/dts/virtual-files";
@@ -228,6 +229,78 @@ describe("DTS Utils", () => {
             expect(removeDtsVirtualPrefix(path)).toBe(
                 `${virtualPrefix}file.d.ts`,
             );
+        });
+    });
+
+    describe("isTypeScriptSourceCodeFile", () => {
+        it("returns true for TypeScript files", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file.ts")).toBe(true);
+            expect(isTypeScriptSourceCodeFile("/path/to/component.tsx")).toBe(
+                true,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/module.mts")).toBe(
+                true,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/commonjs.cts")).toBe(
+                true,
+            );
+        });
+
+        it("returns false for JavaScript files", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file.js")).toBe(false);
+            expect(isTypeScriptSourceCodeFile("/path/to/component.jsx")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/module.mjs")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/commonjs.cjs")).toBe(
+                false,
+            );
+        });
+
+        it("returns false for declaration files", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file.d.ts")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/module.d.mts")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/commonjs.d.cts")).toBe(
+                false,
+            );
+        });
+
+        it("returns false for non-script files", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file.json")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/image.png")).toBe(
+                false,
+            );
+            expect(isTypeScriptSourceCodeFile("/path/to/style.css")).toBe(
+                false,
+            );
+        });
+
+        it("handles paths with multiple dots", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file.spec.ts")).toBe(
+                true,
+            );
+            expect(
+                isTypeScriptSourceCodeFile("/path/to/component.test.tsx"),
+            ).toBe(true);
+            expect(isTypeScriptSourceCodeFile("/path/to/module.min.ts")).toBe(
+                true,
+            );
+        });
+
+        it("handles paths with no extension", () => {
+            expect(isTypeScriptSourceCodeFile("/path/to/file")).toBe(false);
+        });
+
+        it("handles empty string", () => {
+            expect(isTypeScriptSourceCodeFile("")).toBe(false);
         });
     });
 

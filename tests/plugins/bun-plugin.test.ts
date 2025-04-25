@@ -5,7 +5,7 @@ import {
     createProject,
     runBuild,
     validateBuildFiles,
-} from "./utils";
+} from "../utils";
 
 describe("Plugins", () => {
     beforeEach(() => {

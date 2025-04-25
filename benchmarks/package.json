@@ -15,10 +15,8 @@
     "devDependencies": {
         "tsdown": "^0.9.6",
         "tsup": "^8.4.0",
-        "unbuild": "^3.5.0"
-    },
-    "dependencies": {
-        "@types/node": "^20.17.30",
-        "bunchee": "^6.5.1"
+        "unbuild": "^3.5.0",
+        "bunchee": "^6.5.1",
+        "@types/node": "^20.17.30"
     }
 }

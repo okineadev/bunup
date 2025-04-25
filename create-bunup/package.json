@@ -1,9 +1,10 @@
 {
     "name": "create-bunup",
     "description": "Quickly scaffold a new TypeScript package with Bunup",
-    "version": "0.4.72",
+    "version": "0.4.85",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+    "type": "module",
     "maintainers": [
         {
             "name": "Arshad Yaseen",
@@ -20,7 +21,7 @@
     "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
     "files": ["dist"],
     "bin": {
-        "create-bunup": "dist/index.mjs"
+        "create-bunup": "dist/index.js"
     },
     "scripts": {
         "fetch-latest-dep-versions": "bun run fetch-latest-dep-versions.ts && biome format --write src/latest-dep-versions.json",

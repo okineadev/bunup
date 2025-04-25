@@ -27,10 +27,6 @@ export async function watch(
 
     const watcher = chokidar.watch(Array.from(watchPaths), {
         persistent: true,
-        awaitWriteFinish: {
-            stabilityThreshold: 100,
-            pollInterval: 50,
-        },
         ignoreInitial: true,
         atomic: true,
         ignorePermissionErrors: true,

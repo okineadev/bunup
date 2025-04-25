@@ -6,7 +6,6 @@ import {
     parseErrorMessage,
 } from "./errors";
 import {
-    type ProcessableEntry,
     filterTypeScriptEntries,
     getEntryNamingFormat,
     normalizeEntryToProcessableEntries,
@@ -15,7 +14,6 @@ import { loadPackageJson, loadTsconfig } from "./loaders";
 import { logger, setSilent } from "./logger";
 import {
     type BuildOptions,
-    type Format,
     createBuildOptions,
     getResolvedBytecode,
     getResolvedDefine,
@@ -25,11 +23,16 @@ import {
 } from "./options";
 import { externalPlugin } from "./plugins/internal/external";
 import { injectShimsPlugin } from "./plugins/internal/shims";
-import { filterBunupBunPlugins } from "./plugins/utils";
+import type { BuildOutput } from "./plugins/types";
+import {
+    filterBunupBunPlugins,
+    filterBunupPlugins,
+    runPluginBuildDoneHooks,
+    runPluginBuildStartHooks,
+} from "./plugins/utils";
 import type { BunPlugin } from "./types";
 import {
     cleanOutDir,
-    formatFileSize,
     getDefaultDtsExtention,
     getDefaultOutputExtension,
     getShortFilePath,
@@ -40,6 +43,10 @@ export async function build(
     partialOptions: Partial<BuildOptions>,
     rootDir: string = process.cwd(),
 ): Promise<void> {
+    const buildOutput: BuildOutput = {
+        files: [],
+    };
+
     const options = createBuildOptions(partialOptions);
 
     if (!options.entry || options.entry.length === 0 || !options.outDir) {
@@ -57,12 +64,16 @@ export async function build(
     const { packageJson, path } = await loadPackageJson(rootDir);
 
     if (packageJson && path) {
-        logger.cli(`Using package.json: ${getShortFilePath(path, 2)}`, {
+        logger.cli(`Using ${getShortFilePath(path, 2)}`, {
             muted: true,
             identifier: options.name,
             once: `${path}:${options.name}`,
         });
     }
+
+    const bunupPlugins = filterBunupPlugins(options.plugins);
+
+    await runPluginBuildStartHooks(bunupPlugins, options);
 
     const processableEntries = normalizeEntryToProcessableEntries(
         options.entry,
@@ -73,21 +84,82 @@ export async function build(
     if (!options.dtsOnly) {
         const plugins: BunPlugin[] = [
             externalPlugin(options, packageJson),
-            ...filterBunupBunPlugins(options.plugins ?? []).map(
-                (p) => p.plugin,
-            ),
+            ...filterBunupBunPlugins(options.plugins).map((p) => p.plugin),
         ];
 
         const buildPromises = options.format.flatMap((fmt) =>
-            processableEntries.map((entry) => {
-                return buildEntry(
-                    options,
-                    rootDir,
-                    entry,
-                    fmt,
-                    packageType,
-                    plugins,
+            processableEntries.map(async (entry) => {
+                const extension =
+                    options.outputExtension?.({
+                        format: fmt,
+                        packageType,
+                        options,
+                        entry,
+                    }).js ?? getDefaultOutputExtension(fmt, packageType);
+
+                const result = await Bun.build({
+                    entrypoints: [`${rootDir}/${entry.fullEntryPath}`],
+                    format: fmt,
+                    naming: {
+                        entry: getEntryNamingFormat(entry.name, extension),
+                    },
+                    splitting: getResolvedSplitting(options.splitting, fmt),
+                    bytecode: getResolvedBytecode(options.bytecode, fmt),
+                    define: getResolvedDefine(
+                        options.define,
+                        options.shims,
+                        options.env,
+                        fmt,
+                    ),
+                    minify: getResolvedMinify(options),
+                    outdir: `${rootDir}/${options.outDir}`,
+                    target: options.target,
+                    sourcemap: options.sourcemap,
+                    loader: options.loader,
+                    drop: options.drop,
+                    banner: options.banner,
+                    footer: options.footer,
+                    publicPath: options.publicPath,
+                    env: getResolvedEnv(options.env),
+                    plugins: [
+                        ...plugins,
+                        injectShimsPlugin({
+                            format: fmt,
+                            target: options.target,
+                            shims: options.shims,
+                        }),
+                    ],
+                    throw: false,
+                });
+
+                if (!result.success) {
+                    for (const log of result.logs) {
+                        if (log.level === "error") {
+                            throw new BunupBuildError(log.message);
+                        }
+                        if (log.level === "warning") logger.warn(log.message);
+                        else if (log.level === "info") logger.info(log.message);
+                    }
+                }
+
+                const relativePathToOutputDir = getRelativePathToOutputDir(
+                    options.outDir,
+                    entry.name,
+                    extension,
                 );
+                const outputPath = getFullPath(
+                    rootDir,
+                    relativePathToOutputDir,
+                );
+
+                buildOutput.files.push({
+                    fullPath: outputPath,
+                    relativePathToOutputDir,
+                });
+
+                logger.progress(fmt.toUpperCase(), relativePathToOutputDir, {
+                    identifier: options.name,
+                });
             }),
         );
 
@@ -101,14 +173,11 @@ export async function build(
         );
 
         if (tsconfig.path) {
-            logger.cli(
-                `Using tsconfig: ${getShortFilePath(tsconfig.path, 2)}`,
-                {
-                    muted: true,
-                    identifier: options.name,
-                    once: `${tsconfig.path}:${options.name}`,
-                },
-            );
+            logger.cli(`Using ${getShortFilePath(tsconfig.path, 2)}`, {
+                muted: true,
+                identifier: options.name,
+                once: `${tsconfig.path}:${options.name}`,
+            });
         }
 
         const formatsToProcessDts = options.format.filter((fmt) => {
@@ -149,18 +218,28 @@ export async function build(
                                 }).dts ??
                                 getDefaultDtsExtention(fmt, packageType);
 
-                            const relativePath = `${options.outDir}/${entry.name}${extension}`;
-                            const outputPath = `${rootDir}/${relativePath}`;
+                            const relativePathToOutputDir =
+                                getRelativePathToOutputDir(
+                                    options.outDir,
+                                    entry.name,
+                                    extension,
+                                );
+
+                            const outputPath = getFullPath(
+                                rootDir,
+                                relativePathToOutputDir,
+                            );
+
+                            buildOutput.files.push({
+                                fullPath: outputPath,
+                                relativePathToOutputDir,
+                            });
 
                             await Bun.write(outputPath, content);
-                            const fileSize = Bun.file(outputPath).size || 0;
 
-                            logger.progress(
-                                "DTS",
-                                relativePath,
-                                formatFileSize(fileSize),
-                                options.name,
-                            );
+                            logger.progress("DTS", relativePathToOutputDir, {
+                                identifier: options.name,
+                            });
                         }),
                     );
                 }),
@@ -173,78 +252,21 @@ export async function build(
         }
     }
 
-    if (options.onBuildSuccess) {
-        await options.onBuildSuccess(options);
+    await runPluginBuildDoneHooks(bunupPlugins, options, buildOutput);
+
+    if (options.onSuccess) {
+        await options.onSuccess(options);
     }
 }
 
-async function buildEntry(
-    options: BuildOptions,
-    rootDir: string,
-    entry: ProcessableEntry,
-    fmt: Format,
-    packageType: string | undefined,
-    plugins: BunPlugin[],
-): Promise<void> {
-    const extension =
-        options.outputExtension?.({
-            format: fmt,
-            packageType,
-            options,
-            entry,
-        }).js ?? getDefaultOutputExtension(fmt, packageType);
+function getRelativePathToOutputDir(
+    outputDir: string,
+    entryName: string,
+    extension: string,
+): string {
+    return `${outputDir}/${entryName}${extension}`;
+}
 
-    const result = await Bun.build({
-        entrypoints: [`${rootDir}/${entry.fullEntryPath}`],
-        format: fmt,
-        naming: {
-            entry: getEntryNamingFormat(entry.name, extension),
-        },
-        splitting: getResolvedSplitting(options.splitting, fmt),
-        bytecode: getResolvedBytecode(options.bytecode, fmt),
-        define: getResolvedDefine(
-            options.define,
-            options.shims,
-            options.env,
-            fmt,
-        ),
-        minify: getResolvedMinify(options),
-        outdir: `${rootDir}/${options.outDir}`,
-        target: options.target,
-        sourcemap: options.sourcemap,
-        loader: options.loader,
-        drop: options.drop,
-        banner: options.banner,
-        footer: options.footer,
-        publicPath: options.publicPath,
-        env: getResolvedEnv(options.env),
-        plugins: [
-            ...plugins,
-            injectShimsPlugin({
-                format: fmt,
-                target: options.target,
-                shims: options.shims,
-            }),
-        ],
-        throw: false,
-    });
-
-    if (!result.success) {
-        for (const log of result.logs) {
-            if (log.level === "error") throw new BunupBuildError(log.message);
-            if (log.level === "warning") logger.warn(log.message);
-            else if (log.level === "info") logger.info(log.message);
-        }
-    }
-
-    const relativePath = `${options.outDir}/${entry.name}${extension}`;
-    const outputPath = `${rootDir}/${relativePath}`;
-    const fileSize = Bun.file(outputPath).size || 0;
-
-    logger.progress(
-        fmt.toUpperCase(),
-        relativePath,
-        formatFileSize(fileSize),
-        options.name,
-    );
+function getFullPath(rootDir: string, relativePathToOutputDir: string): string {
+    return `${rootDir}/${relativePathToOutputDir}`;
 }

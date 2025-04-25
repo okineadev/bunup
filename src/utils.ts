@@ -8,7 +8,7 @@ export function addField<T extends Record<string, unknown>, F extends string>(
     objectOrArray: T | T[],
     field: F,
     value: unknown,
-) {
+): (T & { [key in F]: unknown }) | (T[] & { [key in F]: unknown }[]) {
     return Array.isArray(objectOrArray)
         ? objectOrArray.map((o) => ({ ...o, [field]: value }))
         : { ...objectOrArray, [field]: value };
@@ -99,8 +99,4 @@ export async function cleanOutDir(
         throw new BunupBuildError(`Failed to clean output directory: ${error}`);
     }
     await fs.mkdir(outDirPath, { recursive: true });
-}
-
-export function isTypeScriptFile(file: string): boolean {
-    return [".ts", ".mts", ".cts", ".tsx"].some((ext) => file.endsWith(ext));
 }

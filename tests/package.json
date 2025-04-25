@@ -9,7 +9,7 @@
         "zx-extra": "^4.0.5"
     },
     "scripts": {
-        "build": "bun run ../dist/cli.mjs"
+        "build": "bun run ../dist/cli.js"
     },
     "devDependencies": {
         "ora": "^8.2.0",

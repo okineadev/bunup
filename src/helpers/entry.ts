@@ -1,6 +1,6 @@
 import { basename, dirname, extname } from "node:path";
+import { isTypeScriptSourceCodeFile } from "../dts/utils";
 import type { Entry } from "../options";
-import { isTypeScriptFile } from "../utils";
 export type ProcessableEntry = {
     fullEntryPath: string;
     name: string;
@@ -101,7 +101,9 @@ export function normalizeEntryToProcessableEntries(
 export function filterTypeScriptEntries(
     entries: ProcessableEntry[],
 ): ProcessableEntry[] {
-    return entries.filter((entry) => isTypeScriptFile(entry.fullEntryPath));
+    return entries.filter((entry) =>
+        isTypeScriptSourceCodeFile(entry.fullEntryPath),
+    );
 }
 
 export function getEntryNamingFormat(name: string, extension: string) {

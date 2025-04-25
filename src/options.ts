@@ -253,7 +253,7 @@ export interface BuildOptions {
      *
      * @param options The build options that were used
      */
-    onBuildSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>;
+    onSuccess?: (options: Partial<BuildOptions>) => MaybePromise<void>;
     /**
      * A banner to be added to the final bundle, this can be a directive like "use client" for react or a comment block such as a license for the code.
      *

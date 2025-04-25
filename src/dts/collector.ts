@@ -2,6 +2,7 @@ import { resolveTsImportPath } from "ts-import-resolver";
 import { parseErrorMessage } from "../errors";
 import type { TsConfigData } from "../loaders";
 import { logger } from "../logger";
+import { isDtsFile, isTypeScriptSourceCodeFile } from "./utils";
 
 const importRegex = /^\s*import\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/gm;
 const exportRegex = /^\s*export\s+.*from\s+['"]([^'"]+)['"]/gm;
@@ -64,7 +65,14 @@ export async function collectTsFiles(
                       })
                     : null;
 
-                if (!resolvedImport) continue;
+                if (
+                    !resolvedImport ||
+                    !(
+                        isTypeScriptSourceCodeFile(resolvedImport) ||
+                        isDtsFile(resolvedImport)
+                    )
+                )
+                    continue;
 
                 if (!visited.has(resolvedImport)) {
                     visited.add(resolvedImport);

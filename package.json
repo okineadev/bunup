@@ -1,9 +1,10 @@
 {
     "name": "bunup",
     "description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-    "version": "0.4.72",
+    "version": "0.4.85",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
+    "type": "module",
     "maintainers": [
         {
             "name": "Arshad Yaseen",
@@ -18,12 +19,15 @@
     "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bun", "bunup", "bun-bundler"],
-    "types": "./dist/index.d.ts",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "files": ["dist"],
     "bin": {
-        "bunup": "./dist/cli.mjs"
+        "bunup": "./dist/cli.js"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": "./dist/index.js",
+        "./plugins": "./dist/plugins.js"
     },
     "scripts": {
         "build": "bunup",
@@ -49,7 +53,7 @@
     },
     "lint-staged": {
         "*": "bun run format --no-errors-on-unmatched",
-        "src/**/*.(m|c)?(j|t)s|(bump|bunup).config.ts": "bun run tsc"
+        "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
     "workspaces": ["tests", "docs", "benchmarks", "create-bunup"],
     "dependencies": {
@@ -74,7 +78,7 @@
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.5",
         "bumpp": "^10.1.0",
-        "bunup": "^0.4.69",
+        "bunup": "^0.4.78",
         "create-bunup": "workspace:create-bunup",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.1",

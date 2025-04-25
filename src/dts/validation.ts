@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { BunupDTSBuildError } from "../errors";
-import { isTypeScriptFile } from "../utils";
+import { isTypeScriptSourceCodeFile } from "./utils";
 
 export async function validateInputs(
     rootDir: string,
@@ -27,7 +27,7 @@ export async function validateInputs(
         );
     }
 
-    if (!isTypeScriptFile(absoluteEntry)) {
+    if (!isTypeScriptSourceCodeFile(absoluteEntry)) {
         throw new BunupDTSBuildError(
             `Entry file must be a TypeScript file: ${absoluteEntry}`,
         );

@@ -3,7 +3,7 @@
         "@biomejs/biome": "^1.9.4",
         "@commitlint/cli": "^19.8.0",
         "@commitlint/config-conventional": "^19.8.0",
-        "bunup": "^0.4.70",
+        "bunup": "^0.4.72",
         "bumpp": "^10.1.0",
         "husky": "^9.1.7",
         "typescript": "^5.8.3",

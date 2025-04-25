@@ -4,7 +4,7 @@ import { DTS_VIRTUAL_FILE_PREFIX } from "./virtual-files";
 
 const JSTS_REGEX = /\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/;
 
-function isDtsFile(filePath: string): boolean {
+export function isDtsFile(filePath: string): boolean {
     return (
         filePath.endsWith(".d.ts") ||
         filePath.endsWith(".d.mts") ||
@@ -14,6 +14,13 @@ function isDtsFile(filePath: string): boolean {
 
 export function isSourceCodeFile(filePath: string): boolean {
     return JSTS_REGEX.test(filePath) && !isDtsFile(filePath);
+}
+
+export function isTypeScriptSourceCodeFile(file: string): boolean {
+    return (
+        [".ts", ".mts", ".cts", ".tsx"].some((ext) => file.endsWith(ext)) &&
+        !isDtsFile(file)
+    );
 }
 
 export function getDtsPathFromSourceCodePath(filePath: string): string {

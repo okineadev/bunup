@@ -1,5 +1,4 @@
 import pc from "picocolors";
-import { version } from "../package.json";
 import { BUNUP_CLI_OPTIONS_URL } from "./constants";
 import { BunupCLIError } from "./errors";
 import { getEntryNameOnly } from "./helpers/entry";
@@ -73,7 +72,7 @@ function showHelp(): void {
 }
 
 function showVersion(): void {
-    console.log(version);
+    console.log("0.4.74");
     process.exit(0);
 }
 

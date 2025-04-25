@@ -144,3 +144,7 @@ bunup --filter core,utils
 # or watch specific packages
 bunup --filter core,utils --watch
 ```
+
+::: info
+Bunup do incremental builds in workspaces, meaning it will only rebuild packages that have changed.
+:::

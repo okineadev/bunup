@@ -5,6 +5,7 @@ const COMMON_OPTIONS: Partial<DefineConfigItem> = {
     minify: true,
     splitting: false,
     target: "bun",
+    format: ["esm"],
 };
 
 export default defineWorkspace([
@@ -15,24 +16,26 @@ export default defineWorkspace([
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
-                format: ["cjs", "esm"],
                 dts: true,
             },
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/cli.ts"],
-                format: ["esm"],
+            },
+            {
+                ...COMMON_OPTIONS,
+                entry: { plugins: "src/plugins/built-in/index.ts" },
+                dts: true,
             },
         ],
     },
     {
         name: "create-bunup",
-        root: "./create-bunup",
+        root: "create-bunup",
         config: [
             {
                 ...COMMON_OPTIONS,
                 entry: ["src/index.ts"],
-                format: ["esm"],
             },
         ],
     },
