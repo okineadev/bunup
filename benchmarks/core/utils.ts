@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 
-import { ITERATIONS } from "./constants.mjs";
+import { ITERATIONS } from "./constants.ts";
 
 export async function runBenchmarksForBundlers(bundlers) {
     const results = [];

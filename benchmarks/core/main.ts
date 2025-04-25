@@ -1,20 +1,30 @@
 import path from "node:path";
 
-import { bundle as buncheeBuild } from "bunchee";
-import { build as tsdownBuild } from "tsdown";
-import { build as unbuildBuild } from "unbuild";
-import { build as bunupBuild } from "../../dist/index.mjs";
+import {
+    bundle as buncheeBuild,
+    type BundleConfig as BuncheeOptions,
+} from "bunchee";
+import { build as tsdownBuild, type Options as TsdownOptions } from "tsdown";
+import {
+    build as unbuildBuild,
+    type BuildOptions as UnbuildOptions,
+} from "unbuild";
+import {
+    build as bunupBuild,
+    type BuildOptions as BunupOptions,
+} from "../../dist/index.mjs";
 
-import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
-import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.mjs";
+import { ENTRY_POINT, RESULTS_FILE } from "./constants";
+import { runBenchmarksForBundlers, saveBenchmarkResults } from "./utils.js";
+import type { Bundler } from "./types";
 
-const bundlers = [
+const bundlers: Bundler[] = [
     {
         name: "bunup",
-        buildFn: (options) => bunupBuild(options),
-        options: (dts) => ({
+        buildFn: (options: BunupOptions) => bunupBuild(options),
+        options: (dts): BunupOptions => ({
             entry: [ENTRY_POINT],
-            outDir: "bunup-dist",
+            outDir: "dist/bunup",
             format: ["esm", "cjs"],
             dts,
             clean: true,
@@ -25,13 +35,13 @@ const bundlers = [
     {
         name: "tsdown",
         buildFn: tsdownBuild,
-        options: (dts) => ({
+        options: (dts): TsdownOptions => ({
             entry: [ENTRY_POINT],
-            outDir: "tsdown-dist",
+            outDir: "dist/tsdown",
             format: ["esm", "cjs"],
             ...(dts && {
                 dts: {
-                    isolatedDeclaration: true,
+                    isolatedDeclarations: true,
                 },
             }),
             treeshake: true,
@@ -40,21 +50,27 @@ const bundlers = [
     },
     {
         name: "unbuild",
-        buildFn: (options) => unbuildBuild(process.cwd(), false, options),
-        options: (dts) => ({
+        buildFn: (options: UnbuildOptions) =>
+            // @ts-expect-error
+            unbuildBuild(process.cwd(), false, options),
+        options: (dts): UnbuildOptions => ({
+            // @ts-expect-error
             entries: [ENTRY_POINT],
-            outDir: "unbuild-dist",
+            outDir: "dist/unbuild",
             format: ["esm", "cjs"],
+            failOnWarn: false,
             declaration: dts,
             clean: true,
         }),
     },
     {
         name: "bunchee",
-        buildFn: (options) => buncheeBuild("", options),
-        options: (dts) => ({
+        buildFn: (options: BuncheeOptions) => buncheeBuild("", options),
+        options: (dts): BuncheeOptions => ({
+            // @ts-expect-error
             format: ["esm", "cjs"],
             clean: true,
+            // @ts-expect-error
             dts,
         }),
     },
