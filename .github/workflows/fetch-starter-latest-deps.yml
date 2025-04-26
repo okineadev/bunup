@@ -20,7 +20,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: 🛠️ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
         with:
           bun-version: latest
 
