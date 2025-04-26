@@ -15,17 +15,18 @@
  */
 
 import path from "node:path";
-import { build as tsupBuild } from "tsup";
+import { build as tsupBuild, type Options as TsupOptions } from "tsup";
 
-import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
-import { appendBenchmarkResults, runBenchmarksForBundlers } from "./utils.mjs";
+import { ENTRY_POINT, RESULTS_FILE } from "./constants.ts";
+import { appendBenchmarkResults, runBenchmarksForBundlers } from "./utils.ts";
+import type { Bundler } from "./types";
 
-const tsupBundler = {
+const tsupBundler: Bundler = {
     name: "tsup",
     buildFn: (options) => tsupBuild(options),
-    options: (dts) => ({
+    options: (dts): TsupOptions => ({
         entry: [ENTRY_POINT],
-        outDir: "tsup-dist",
+        outDir: "dist/tsup",
         format: ["esm", "cjs"],
         dts,
         treeshake: true,
