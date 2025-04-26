@@ -1,0 +1,61 @@
+name: ⏫ Fetch Starter Latest Dependencies
+
+on:
+  schedule:
+    # Run at 2:00 AM UTC (before most developers start coding globally)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: 🛠️ Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 📥 Fetch latest dependency versions
+        run: bun run fetch-latest-dep-versions
+
+      - name: 🛠️ Build packages
+        run: bun run build
+
+      - name: 🔍 Check for changes
+        id: check_changes
+        run: |
+          if [[ $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🔧 Configure Git
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 💾 Commit changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git add .
+          git commit -m "chore: update starter root dev dependencies"
+
+      - name: 🚀 Release
+        if: steps.check_changes.outputs.changes == 'true'
+        run: bun run release:ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
