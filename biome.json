@@ -14,13 +14,13 @@
                 "noUselessElse": "off"
             }
         },
-        "ignore": ["**/dist", "benchmarks/src"]
+        "ignore": ["**/dist", "benchmarks/src", "**/bun.lock"]
     },
     "formatter": {
         "enabled": true,
         "indentStyle": "space",
         "indentWidth": 4,
-        "ignore": ["**/dist"]
+        "ignore": ["**/dist", "**/bun.lock"]
     },
     "vcs": {
         "enabled": true,

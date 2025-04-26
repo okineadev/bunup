@@ -10,7 +10,7 @@
 		}
 	},
 	"scripts": {
-		"benchmark": "bun run core/main.mjs && node core/tsup.mjs"
+		"benchmark": "bun run core/main.ts && node core/tsup.ts"
 	},
 	"devDependencies": {
 		"bunchee": "^6.5.1",

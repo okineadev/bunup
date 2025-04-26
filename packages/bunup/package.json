@@ -4,7 +4,6 @@
     "version": "0.4.99",
     "license": "MIT",
     "author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-    "type": "module",
     "maintainers": [
         {
             "name": "Arshad Yaseen",
@@ -16,15 +15,25 @@
         "type": "git",
         "url": "git+https://github.com/arshad-yaseen/bunup.git"
     },
-    "homepage": "https://bunup.dev",
     "funding": "https://github.com/sponsors/arshad-yaseen",
+    "homepage": "https://bunup.dev",
     "keywords": ["bun", "bunup", "bun-bundler"],
-    "types": "./dist/index.d.ts",
+    "files": ["dist", "./../../LICENSE"],
+
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
-    "files": ["dist"],
-    "bin": {
-        "bunup": "./dist/cli.js"
+    "dependencies": {
+        "chokidar": "^4.0.3",
+        "coffi": "^0.1.25",
+        "oxc-resolver": "^5.0.1",
+        "oxc-transform": "^0.58.1",
+        "rolldown": "1.0.0-beta.7",
+        "rolldown-plugin-dts": "^0.7.0",
+        "tinyexec": "^1.0.1",
+        "ts-import-resolver": "^0.1.10"
+    },
+    "peerDependencies": {
+        "typescript": ">=4.5.0"
     },
     "exports": {
         ".": {
@@ -48,25 +57,17 @@
             }
         }
     },
-    "dependencies": {
-        "chokidar": "^4.0.3",
-        "coffi": "^0.1.25",
-        "oxc-resolver": "^5.0.1",
-        "oxc-transform": "^0.58.1",
-        "rolldown": "1.0.0-beta.7",
-        "rolldown-plugin-dts": "^0.7.0",
-        "tinyexec": "^1.0.1",
-        "ts-import-resolver": "^0.1.10"
-    },
-    "scripts": {
-        "npm-publish": "bun publish --access public --no-git-checks"
-    },
-    "peerDependencies": {
-        "typescript": ">=4.5.0"
+    "bin": {
+        "bunup": "./dist/cli.js"
     },
     "peerDependenciesMeta": {
         "typescript": {
             "optional": true
         }
-    }
+    },
+    "scripts": {
+        "npm-publish": "bun publish --access public --no-git-checks"
+    },
+    "type": "module",
+    "types": "./dist/index.d.ts"
 }

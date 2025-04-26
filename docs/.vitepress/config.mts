@@ -10,7 +10,6 @@ import { version } from "../../packages/bunup/package.json";
 export default defineConfig({
     title: "Bunup",
     description: "A blazing-fast build tool for your libraries built with Bun.",
-    ignoreDeadLinks: true,
     themeConfig: {
         logo: "/logo.svg",
         nav: [
@@ -125,4 +124,5 @@ export default defineConfig({
     sitemap: {
         hostname: "https://bunup.dev",
     },
+    ignoreDeadLinks: true,
 });
