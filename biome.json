@@ -14,7 +14,7 @@
                 "noUselessElse": "off"
             }
         },
-        "ignore": ["**/dist"]
+        "ignore": ["**/dist", "benchmarks/src"]
     },
     "formatter": {
         "enabled": true,
