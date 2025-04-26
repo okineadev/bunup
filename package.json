@@ -9,7 +9,7 @@
         "typescript": "^5.8.3"
     },
     "lint-staged": {
-        "*": "bun run format --no-errors-on-unmatched",
+        "*": "bun run format:fix --no-errors-on-unmatched",
         "src/**/*.(m|c)?(j|t)s": "bun run tsc"
     },
     "scripts": {
