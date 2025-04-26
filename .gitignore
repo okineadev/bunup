@@ -44,5 +44,4 @@ node_modules/
 # vitepress cache directory
 **/.vitepress/cache
 
-**/*dist
-tests/.project
+**/dist
