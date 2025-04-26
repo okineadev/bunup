@@ -1,11 +1,10 @@
 import fs from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 
-import { ITERATIONS } from "./constants.ts";
-import type { BenchmarkResult, Bundler } from "./types.ts";
+import { ITERATIONS } from "./constants.mjs";
 
-export async function runBenchmarksForBundlers(bundlers: Bundler[]) {
-    const results: BenchmarkResult[] = [];
+export async function runBenchmarksForBundlers(bundlers) {
+    const results = [];
 
     console.log("Performing warmup builds...");
 
@@ -42,7 +41,7 @@ export async function runBenchmarksForBundlers(bundlers: Bundler[]) {
     return results;
 }
 
-function formatBenchmarkResults(results: BenchmarkResult[]) {
+function formatBenchmarkResults(results) {
     const bundlerGroups = {};
 
     for (const result of results) {
@@ -65,19 +64,13 @@ function formatBenchmarkResults(results: BenchmarkResult[]) {
     return lines.join("\n");
 }
 
-export async function saveBenchmarkResults(
-    results: BenchmarkResult[],
-    filePath: string,
-) {
+export async function saveBenchmarkResults(results, filePath) {
     const formattedResults = formatBenchmarkResults(results);
     await fs.writeFile(filePath, formattedResults, "utf-8");
     console.log(`Benchmark results saved to ${filePath}`);
 }
 
-export async function appendBenchmarkResults(
-    newResults: BenchmarkResult[],
-    filePath: string,
-) {
+export async function appendBenchmarkResults(newResults, filePath) {
     try {
         let existingContent = "";
         existingContent = await fs.readFile(filePath, "utf-8");

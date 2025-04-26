@@ -6,27 +6,26 @@
  * 1. tsup crashes when run with Bun, causing the main benchmark suite to fail
  * 2. tsup works properly when run with Node.js
  *
- * By separating the tsup benchmark into its own .ts file, we can:
- * - Run the main benchmarks with: bun run benchmarks/src/main.ts
- * - Run the tsup benchmark with: node benchmarks/src/tsup.ts
+ * By separating the tsup benchmark into its own .mjs file, we can:
+ * - Run the main benchmarks with: bun run benchmarks/src/main.mjs
+ * - Run the tsup benchmark with: node benchmarks/src/tsup.mjs
  *
  * This approach ensures we can still compare tsup performance against other bundlers
  * while working around the Bun compatibility issue.
  */
 
 import path from "node:path";
-import { type Options as TsupOptions, build as tsupBuild } from "tsup";
+import { build as tsupBuild } from "tsup";
 
-import { ENTRY_POINT, RESULTS_FILE } from "./constants.ts";
-import type { Bundler } from "./types";
-import { appendBenchmarkResults, runBenchmarksForBundlers } from "./utils.ts";
+import { ENTRY_POINT, RESULTS_FILE } from "./constants.mjs";
+import { appendBenchmarkResults, runBenchmarksForBundlers } from "./utils.mjs";
 
-const tsupBundler: Bundler = {
+const tsupBundler = {
     name: "tsup",
     buildFn: (options) => tsupBuild(options),
-    options: (dts): TsupOptions => ({
+    options: (dts) => ({
         entry: [ENTRY_POINT],
-        outDir: "dist/tsup",
+        outDir: "tsup-dist",
         format: ["esm", "cjs"],
         dts,
         treeshake: true,

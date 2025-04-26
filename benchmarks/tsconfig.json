@@ -1,8 +1,6 @@
 {
     "compilerOptions": {
-        "declaration": true,
-        "esModuleInterop": true,
-        "allowImportingTsExtensions": true,
-        "noEmit": true
+      "declaration": true,
+      "isolatedDeclarations": true,
     }
 }

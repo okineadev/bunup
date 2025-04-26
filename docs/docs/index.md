@@ -36,7 +36,7 @@ yarn dlx create-bunup@latest
 
 :::
 
-To learn more, see the [TypeScript Library Starter](/typescript-library-starter) for full guide.
+To learn more, see the [TypeScript Library Starter](/docs//typescript-library-starter) for full guide.
 
 ## Quick Start
 

@@ -16,7 +16,7 @@
         "type": "git",
         "url": "git+https://github.com/arshad-yaseen/bunup.git"
     },
-    "homepage": "https://bunup.dev/typescript-library-starter",
+    "homepage": "https://bunup.dev/docs/typescript-library-starter",
     "funding": "https://github.com/sponsors/arshad-yaseen",
     "keywords": ["bunup", "typescript", "cli", "bun", "create", "starter"],
     "files": ["dist"],
