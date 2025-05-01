@@ -1,0 +1,17 @@
+{
+	"$schema": "./node_modules/release-it/schema/release-it.json",
+	"npm": {
+		"publishArgs": ["--provenance"],
+		"access": "public"
+	},
+	"github": {
+		"releaseName": "${version}",
+		"releaseNotes": {
+			"commit": "* ${commit.subject} (${sha}){ - thanks to @${author.login}!}"
+		}
+	},
+	"hooks": {
+		"after:init": "bun run format",
+		"after:bump": "bun run build"
+	}
+}

@@ -53,9 +53,9 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "^1.2.5",
-		"bumpp": "^10.1.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.1",
+		"release-it": "^19.0.1",
 		"typescript": "^5.8.3"
 	},
 	"peerDependencies": {
@@ -82,9 +82,7 @@
 		"test-build": "bun run --cwd tests build",
 		"tsc": "tsc --noEmit",
 		"release": "release-it --ci",
-		"release:dry-run": "bun run release --dry-run",
-		"release:all": "bun run --cwd=create-bunup release && bun run release",
-		"release:all:dry-run": "bun run --cwd=create-bunup release:dry-run && bun run release:dry-run"
+		"release:dry-run": "bun run release --dry-run"
 	},
 	"lint-staged": {
 		"*": "bun run format:fix && git add .",

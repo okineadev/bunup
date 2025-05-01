@@ -3,8 +3,8 @@ name: 🚀 Release + Publish
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to release (e.g. 1.2.3)'
+      increment:
+        description: 'Increment type (e.g. major, minor, patch; or specify version)'
         required: false
 
 jobs:
@@ -41,6 +41,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
-          VERSION: ${{ github.event.inputs.version }}
-        run: bun run release:all
+          HUSKY: 0
+          increment: ${{ github.event.inputs.increment }}
+        run: bun run release "$increment"
