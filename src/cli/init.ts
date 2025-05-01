@@ -11,6 +11,7 @@ import {
 	tasks,
 	text,
 } from '@clack/prompts'
+import { loadConfig } from 'coffi'
 import {
 	type Agent,
 	type DetectResult,
@@ -43,8 +44,40 @@ async function pathExists(filePath: string): Promise<boolean> {
 	}
 }
 
+async function checkExistingConfig(): Promise<{
+	exists: boolean
+	filepath?: string
+}> {
+	const { config, filepath } = await loadConfig({
+		name: 'bunup.config',
+		extensions: ['.ts', '.js', '.mjs', '.cjs'],
+		maxDepth: 1,
+		packageJsonProperty: 'bunup',
+	})
+
+	return {
+		exists: !!config,
+		filepath: filepath || undefined,
+	}
+}
+
 export async function init(): Promise<void> {
 	intro(pc.bgCyan(pc.black(' Bunup ')))
+	await configureTsconfig()
+
+	const { exists: configExists, filepath: configPath } =
+		await checkExistingConfig()
+	if (configExists) {
+		const shouldContinue = await confirm({
+			message: `A bunup configuration already exists at ${pc.cyan(configPath || 'bunup.config.ts')}. Continue and overwrite it?`,
+			initialValue: false,
+		})
+
+		if (isCancel(shouldContinue) || !shouldContinue) {
+			cancel('Initialization cancelled')
+			process.exit(1)
+		}
+	}
 
 	const packageManager = await detectPackageManager()
 
@@ -53,14 +86,15 @@ export async function init(): Promise<void> {
 		process.exit(1)
 	}
 
-	const packageJsonPath = path.join(process.cwd(), 'package.json')
-	let packageJson: any
+	const { config: packageJson, filepath: packageJsonPath } =
+		await loadConfig<any>({
+			name: 'package',
+			cwd: process.cwd(),
+			extensions: ['.json'],
+		})
 
-	try {
-		const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8')
-		packageJson = JSON.parse(packageJsonContent)
-	} catch {
-		log.error('Cannot find or parse package.json.')
+	if (!packageJson || !packageJsonPath) {
+		log.error('Cannot find package.json.')
 		process.exit(1)
 	}
 
@@ -269,6 +303,7 @@ export async function init(): Promise<void> {
 			generateDts,
 			selectedPlugins as string[],
 			availablePlugins,
+			configPath || undefined,
 		)
 	} else {
 		await createSimpleConfig(
@@ -278,8 +313,11 @@ export async function init(): Promise<void> {
 			generateDts,
 			selectedPlugins as string[],
 			availablePlugins,
+			configPath || undefined,
 		)
 	}
+
+	await configureTsconfig()
 
 	log.success('Configuration generated')
 
@@ -326,6 +364,7 @@ async function createSimpleConfig(
 	dts: boolean,
 	plugins: string[],
 	availablePlugins: PluginOption[],
+	configPath: string = path.join(process.cwd(), 'bunup.config.ts'),
 ) {
 	const pluginsConfig = generatePluginsConfig(plugins, availablePlugins)
 	const configContent = `import { defineConfig } from 'bunup';
@@ -336,10 +375,7 @@ export default defineConfig({
 	outDir: '${outDir}',${dts ? '\n	dts: true,' : ''}${pluginsConfig ? `\n	plugins: [${pluginsConfig}],` : ''}
 });
 `
-	await fs.writeFile(
-		path.join(process.cwd(), 'bunup.config.ts'),
-		configContent,
-	)
+	await fs.writeFile(configPath, configContent)
 }
 
 async function createWorkspaceConfig(
@@ -349,6 +385,7 @@ async function createWorkspaceConfig(
 	dts: boolean,
 	plugins: string[],
 	availablePlugins: PluginOption[],
+	configPath: string = path.join(process.cwd(), 'bunup.config.ts'),
 ) {
 	const pluginsConfig = generatePluginsConfig(plugins, availablePlugins)
 	const workspaceConfigs = workspaces
@@ -375,10 +412,7 @@ export default defineWorkspace([
 ${workspaceConfigs}
 ]);
 `
-	await fs.writeFile(
-		path.join(process.cwd(), 'bunup.config.ts'),
-		configContent,
-	)
+	await fs.writeFile(configPath, configContent)
 }
 
 function generatePluginsConfig(
@@ -454,4 +488,72 @@ async function installBunup(packageJson: any, packageManager: DetectResult) {
 function getCommand(command: ResolvedCommand | null) {
 	if (!command) return ''
 	return `${command.command} ${command.args.join(' ')}`
+}
+
+async function configureTsconfig(): Promise<void> {
+	let tsconfig: any = {}
+	let tsconfigExists = false
+	let tsconfigPath = path.join(process.cwd(), 'tsconfig.json')
+
+	try {
+		const { config, filepath } = await loadConfig<any>({
+			name: 'tsconfig',
+			cwd: process.cwd(),
+			extensions: ['.json'],
+		})
+		if (config && filepath) {
+			tsconfig = config
+			tsconfigExists = true
+			tsconfigPath = filepath
+		}
+	} catch {}
+
+	const isolatedAlreadyEnabled =
+		tsconfig.compilerOptions?.isolatedDeclarations === true
+
+	if (!isolatedAlreadyEnabled) {
+		log.info(
+			`${pc.cyan('About isolatedDeclarations:')} ${pc.gray(`A ${pc.bold('modern TypeScript feature')} for library authors`)}`,
+		)
+		log.info(
+			pc.gray(
+				`Benefits: ${pc.bold('faster builds')}, ${pc.bold('more reliable API types')}, and ${pc.bold('better editor support')} to catch issues during development`,
+			),
+		)
+
+		const enableIsolated = await confirm({
+			message:
+				'Enable isolatedDeclarations in tsconfig.json? (recommended but optional)',
+			initialValue: true,
+		})
+
+		if (isCancel(enableIsolated)) {
+			return
+		}
+
+		if (enableIsolated) {
+			tsconfig.compilerOptions = tsconfig.compilerOptions || {}
+			tsconfig.compilerOptions.isolatedDeclarations = true
+			tsconfig.compilerOptions.declaration = true
+
+			if ('allowJs' in tsconfig.compilerOptions) {
+				tsconfig.compilerOptions.allowJs = null
+			}
+
+			tsconfig.exclude = tsconfig.exclude || []
+			if (!tsconfig.exclude.includes('bunup.config.ts')) {
+				tsconfig.exclude.push('bunup.config.ts')
+			}
+
+			await fs.writeFile(tsconfigPath, JSON.stringify(tsconfig, null, 2))
+
+			log.success('Updated tsconfig.json with isolatedDeclarations')
+		}
+	} else if (tsconfigExists) {
+		tsconfig.exclude = tsconfig.exclude || []
+		if (!tsconfig.exclude.includes('bunup.config.ts')) {
+			tsconfig.exclude.push('bunup.config.ts')
+			await fs.writeFile(tsconfigPath, JSON.stringify(tsconfig, null, 2))
+		}
+	}
 }

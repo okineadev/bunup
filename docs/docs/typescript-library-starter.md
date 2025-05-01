@@ -1,6 +1,6 @@
 # Typescript Library Starter
 
-Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](https://bunup.dev/) - the fastest TypeScript bundler available ⚡️.
+Quickly scaffold modern TypeScript library in 10 seconds with Bun. Powered by [Bunup](https://bunup.dev/) - the fastest TypeScript bundler available ⚡️.
 
 <video src="/typescript-lib-starter-demo.mov" alt="Bunup typescript library starter demo" controls style="border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);"></video>
 
@@ -8,8 +8,9 @@ Quickly scaffold modern TypeScript library in 10 seconds. Powered by [Bunup](htt
 
 - 🚀 **Zero Config**: Get started in seconds with sensible defaults
 - 📦 **Modern Setup**: ESM and CJS output formats, TypeScript declarations
+- ⚡️ **Bun Powered**: Leveraging Bun's speed for development, package management, and testing
 - 🧩 **Monorepo Support**: Create workspace-based projects with ease
-- 🔧 **Complete Tooling**: Testing, linting, formatting, and CI workflows included
+- 🔧 **Complete Tooling**: Testing with Bun test, linting, formatting, and CI workflows included
 - 🚦 **Git Hooks**: Enforced code quality with Husky pre-commit hooks
 - 📝 **Conventional Commits**: Standardized commit messages with commitlint
 - 🚢 **Release Automation**: GitHub Actions for testing and publishing
@@ -49,10 +50,6 @@ $ bunx create-bunup@latest
 ? GitHub username and repo name (username/repo): › username/my-ts-lib
 
 ? Package description: › A TypeScript library
-
-? Select a package manager:
-❯ bun - Fast all-in-one JavaScript runtime
-  pnpm - Fast, disk space efficient package manager
 
 ? Set up as a monorepo? › (y/N)
 
