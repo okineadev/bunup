@@ -41,4 +41,7 @@ We welcome contributions from the community to enhance Bunup's capabilities and 
 
 ![Sponsors](https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg)
 
-![______ 🐈‍⬛ _____________](assets/cat-footer.svg)
+<div align="center">
+
+  ![______ 🐈‍⬛ _____________](assets/cat-footer.svg)
+</div>
