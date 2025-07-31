@@ -40,3 +40,5 @@ For guidelines on contributing, please read the [contributing guide](../../CONTR
 We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
 
 ![Sponsors](https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg)
+
+![__________ 🐈‍⬛ __________](assets/cat-footer.svg)
