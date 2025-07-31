@@ -6,9 +6,9 @@
 
   <!-- markdownlint-disable-next-line no-alt-text -->
 
-![Logo](https://raw.githubusercontent.com/arshad-yaseen/bunup/refs/heads/main/docs/public/logo.svg)
+<img alt="Logo" src="assets/bunup-kawaii-sticker.png" width="400">
 
-![Bunup](https://raw.githubusercontent.com/arshad-yaseen/bunup/refs/heads/main/assets/bunup-title.svg)
+<br>
 
 [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup) [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
 
