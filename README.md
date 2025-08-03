@@ -39,6 +39,8 @@ For guidelines on contributing, please read the [contributing guide](../../CONTR
 
 We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
 
+![Contributors](https://contributors-table.vercel.app/image?repo=bunup/bunup&width=50&columns=15)
+
 ![Sponsors](https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg)
 
 <div align="center">
