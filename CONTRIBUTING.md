@@ -1,141 +1,74 @@
 # Contributing to Bunup
 
-Thank you for your interest in contributing to Bunup! This document provides guidelines and instructions to help you contribute effectively.
+Thank you for your interest in contributing to our project! This guide will help you get started with the development process.
 
-## Getting Started
+## Development Setup
 
-1. **Fork the repository**
+### Prerequisites
 
-   Start by forking the [Bunup repository](https://github.com/arshad-yaseen/bunup).
+- Bun installed on your system
 
-2. **Clone your fork**
+### Getting Started
 
-   ```bash
-   git clone https://github.com/arshad-yaseen/bunup.git
-   cd bunup
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   bun install
-   ```
-
-4. **Set up the development environment**
-
-   Bunup uses itself to build itself! The development setup is already configured in the `bunup.config.ts` file.
+1. Fork the repository
+2. Clone your fork: `git clone https://github.com/bunup/bunup.git`
+3. Navigate to the project directory: `cd bunup`
+4. Install dependencies: `bun install`
+5. Start development: `bun run dev`
 
 ## Development Workflow
 
-### Running in Development Mode
+1. Create a new branch: `git checkout -b feature/your-feature-name`
+2. Make your changes
+3. Check and fix code style and formatting issues: `bun run lint:fix`
+5. Run tests: `bun run test`
+6. Build the project: `bun run build`
+7. Commit your changes using the conventions below
+8. Push your branch to your fork
+9. Open a pull request
 
-To start the development server with watch mode:
+## How to Test Your Changes
 
-```bash
-bun run dev
-```
+There are two main ways to test your changes:
 
-### Building the Project
-
-To build the project:
-
-```bash
-bun run build
-```
-
-### Testing
-
-Run tests to ensure your changes don't break existing functionality:
-
+### 1. Unit Tests
+Add tests in `packages/bunup/test/specs/` and run:
 ```bash
 bun run test
 ```
 
-To test your changes with a real build:
+### 2. Manual Testing with Test Build
+For more comprehensive testing, you can use the test fixtures:
 
-1. First, build bunup with your changes:
-
+1. **Basic testing**: Modify, add, or remove files in `packages/bunup/test/fixtures/` - the entrypoint is `tests/fixtures/index.ts`
+2. **Run test build**:
    ```bash
-   bun run build
+   bun run test:build
    ```
+   This runs a test build using your changes on the fixtures
 
-2. Then run the test build to verify your changes work correctly:
+3. **Configure test build**: Check `packages/bunup/test/bunup.config.ts` to see or modify the build configuration used for test builds
 
-   ```bash
-   bun run test-build
-   ```
+4. **Check test build output**: The output of the test build can be found in `packages/bunup/test/dist/` directory
 
-   This command builds the test project located in the `tests` directory using your local version of bunup, allowing you to verify that your changes work correctly in a real-world scenario.
+The `packages/bunup/test/fixtures/` directory serves as a sandbox where you can create any file structure to test your changes. The test build will process these fixtures using your modifications to Bunup, allowing you to verify that your changes work as expected. The `packages/bunup/test/bunup.config.ts` file contains the build configuration used for this rough testing of the fixtures.
 
-To validate TypeScript types:
+### 3. Testing DTS Bundler Changes
 
-```bash
-bun run tsc
-```
+If you make changes to the DTS bundler (located in `packages/dts`), you can test them directly in the bunup test playground since the packages are linked. Any modifications to the DTS bundler will be automatically available when running test builds in the bunup package if you've started development mode with `bun run dev`. Otherwise, you'll need to run `bun run build` to make your changes available for testing.
 
-### Code Formatting and Linting
+## Commit Message Conventions
 
-Bunup uses Biome for code quality and formatting.
+We follow [Conventional Commits](https://www.conventionalcommits.org/) for clear and structured commit messages:
 
-To lint your code:
-
-```bash
-bun run lint
-```
-
-To format your code:
-
-```bash
-bun run format:fix
-```
-
-## Conventional Commits
-
-This project uses [Conventional Commit format](https://www.conventionalcommits.org/en/v1.0.0/) to automatically generate a changelog and better understand the changes in the project
-
-Here are some examples of conventional commit messages:
-
-- `feat: add new functionality`
-- `fix: correct typos in code`
-- `ci: add GitHub Actions for automated testing`
-
-## Pull Request Process
-
-1. **Create a new branch**
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-2. **Make your changes**
-
-   Implement your feature or bug fix.
-
-3. **Commit your changes**
-
-   Use the [Conventional Commits](#conventional-commits) format to write your commit message.
-
-4. **Push your changes**
-
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-5. **Create a pull request**
-
-   Open a pull request against the `main` branch of the Bunup repository.
-
-   <!-- markdownlint-disable-next-line no-inline-html -->
-   <a id="conventional-pr-titles"></a>The title of your pull request should follow the [Conventional Commit format](#conventional-commits). When a pull request is merged to the main branch, all changes are going to be squashed into a single commit. The message of this commit will be the title of the pull request. And for every release, the commit messages are used to generate the changelog.
-
-   In your PR description:
-
-   - Clearly describe the changes and their purpose
-   - Reference any related issues
-
-6. **Address review feedback**
-
-   Be responsive to review comments and make necessary changes.
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation changes
+- `style:` Code style changes (formatting, etc.)
+- `refactor:` Code changes that neither fix bugs nor add features
+- `perf:` Performance improvements
+- `test:` Adding or updating tests
+- `chore:` Maintenance tasks, dependencies, etc.
 
 ## Documentation
 
@@ -155,7 +88,7 @@ bun run build:docs
 
 ## Performance Considerations
 
-Bunup focuses on performance. When contributing:
+Bunup focuses on speed. When contributing:
 
 - Consider the performance impact of your changes
 - Include benchmark results for performance-related changes
@@ -165,23 +98,27 @@ Bunup focuses on performance. When contributing:
 
 Here's a brief overview of the project structure:
 
-- `src/` - Source code
-  - `cli/` - Command-line interface
-  - `build.ts` - Core build functionality
-  - `watch.ts` - Watch mode functionality
-  - `plugins/` - Bundler plugins
-  - `dts/` - TypeScript declaration file generation
+- `packages/bunup/` - Core bundler package
+  - `src/` - Source code
+    - `build.ts` - Core build functionality
+    - `watch.ts` - Watch mode functionality
+    - `plugins/` - Bundler plugins
+- `packages/dts/` - DTS bundler used by Bunup
+- `packages/plugin-*/` - Official Bunup plugins
 
-## License
+## Pull Request Guidelines
 
-By contributing to Bunup, you agree that your contributions will be licensed under the project's [MIT License](LICENSE).
+1. Update documentation if needed
+2. Ensure all tests pass
+3. Address any feedback from code reviews
+4. Once approved, your PR will be merged
+
+## Code of Conduct
+
+Please be respectful and constructive in all interactions within our community.
 
 ## Questions?
 
-If you have any questions or need help, feel free to:
+If you have any questions, please open an issue for discussion.
 
-- Open an issue on GitHub
-- Reach out to the maintainers:
-  - Arshad Yaseen (<m@arshadyaseen.com>)
-
-Thank you for contributing to make Bunup better!
+Thank you for contributing to Bunup!

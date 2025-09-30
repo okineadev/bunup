@@ -1,4 +1,4 @@
-name: 📄 Deploy Documentation
+name: Deploy Documentation
 
 on:
   push:
@@ -16,31 +16,31 @@ concurrency:
 jobs:
   build:
     if: github.repository == 'bunup/bunup'
-    name: 🛠️ Build
+    name: Build
     permissions: {}
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: 🛠️ Setup Bun
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: 🛠️ Build
+      - name: Build
         run: bun run build:docs
 
-      - name: 📤 Upload artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
 
   deploy:
-    name: 🚀 Deploy
+    name: Deploy
 
     permissions:
       pages: write
@@ -53,6 +53,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

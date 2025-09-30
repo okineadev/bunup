@@ -229,10 +229,6 @@
 					},
 					"description": "A map of file extensions to built-in loader names. This can be used to quickly customize how certain files are loaded."
 				},
-				"bytecode": {
-					"type": "boolean",
-					"description": "Generate bytecode for the output. This can dramatically improve cold start times, but will make the final output larger and slightly increase memory usage. Bytecode is currently only supported for CommonJS (format: \"cjs\"). Must be target: \"bun\"."
-				},
 				"silent": {
 					"type": "boolean",
 					"description": "Disable logging during the build process. When set to true, no logs will be printed to the console."

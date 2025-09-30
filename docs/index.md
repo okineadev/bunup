@@ -1,10 +1,10 @@
 # Introduction
 
-Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
+Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**.
 
 ## Performance
 
-**Bunup** delivers instant builds by design. With Bun's native speed and [Bunup's own high-performance dts bundler](https://github.com/bunup/typeroll), cold starts and rebuilds are lightning fast, even in monorepos. Say goodbye to slow bundling and say hello to instant packaging. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
+Instant builds by design. With Bun’s native speed, builds and rebuilds are extremely quick, even in monorepos. Faster feedback loops, higher productivity, calmer flow. See [benchmarks](https://gugustinette.github.io/bundler-benchmark/).
 
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;" aria-hidden="false">
 <table>
@@ -45,47 +45,50 @@ Bunup is the ⚡️ **blazing-fast build tool** for TypeScript libraries, design
 </table>
 </div>
 
+
+## Scaffold
+
+Spin up a modern, ready-to-publish TypeScript or React component library (or a basic starter) in ~10 seconds:
+
+```sh
+bunx @bunup/cli@latest create
+```
+
+See more in [Scaffold with Bunup](./docs/scaffold-with-bunup.md).
+
 ## Quick Start
-
-Quickly scaffold a new modern TypeScript or React library with Bunup in just 10 seconds.
-
-```sh
-bunx bunup@latest --new
-```
-
-See the [Scaffold with Bunup](./scaffold-with-bunup.md) page for more details.
-
-Or, initialize bunup in an existing project:
-
-```sh
-bunx bunup@latest --init
-```
-
-## Getting Started
-
-Get started with Bunup in seconds - install, configure, and build your TypeScript projects with minimal setup.
-
-### Basic Usage
 
 Create a TypeScript file:
 
-```typescript [src/index.ts]
+```ts [src/index.ts]
 export function greet(name: string): string {
-	return `Hello, ${name}!`;
+  return `Hello, ${name}!`;
 }
 ```
 
-Bundle it with bunup:
+Build it instantly:
 
 ```sh
-bunx bunup src/index.ts
+bunx bunup
 ```
 
-That's it! This creates bundled output in the `dist` directory with ESM format (the default), plus TypeScript declaration files (`.d.ts`) since the entry point is a TypeScript file.
+Outputs to `dist/` with ESM and `.d.ts` types.
+
+Need CommonJS too?
+
+```sh
+bunx bunup --format esm,cjs
+```
+
+Want to generate and sync package exports automatically?
+
+```sh
+bunx bunup --exports
+```
 
 ### Using with package.json
 
-First, install bunup as a dev dependency:
+First, install Bunup as a dev dependency:
 
 ```sh
 bun add --dev bunup
@@ -95,10 +98,10 @@ Add a build script to your `package.json`:
 
 ```json [package.json]
 {
-	"name": "my-package",
-	"scripts": {
-		"build": "bunup src/index.ts"
-	}
+  "name": "my-package",
+  "scripts": {
+    "build": "bunup"
+  }
 }
 ```
 
@@ -108,103 +111,41 @@ Then run:
 bun run build
 ```
 
-## Configuration
+## Default Entry Points
 
-Create a `bunup.config.ts` file for more advanced usage like including plugins, hooks, and advanced options that aren't available via CLI.
+Bunup automatically detects common entry points. If your project contains any of the following, you can just run `bunup` with **no config**:
 
-For example, you can add the [exports](/docs/plugins/exports) plugin to automatically sync your package.json exports on each build - no more manual export management!
+* `index.ts` / `index.tsx`
+* `src/index.ts` / `src/index.tsx`
+* `cli.ts` / `src/cli.ts` / `src/cli/index.ts`
 
-```typescript [bunup.config.ts]
-import { defineConfig } from 'bunup';
-import { exports } from 'bunup/plugins';
+For example, if your project has both `src/index.ts` and `src/cli.ts`, Bunup will build both automatically.
 
-export default defineConfig({
-	entry: ['src/index.ts'],
-	plugins: [exports()],
-});
-```
-
-You can also export an array of configurations:
-
-```typescript [bunup.config.ts]
-export default defineConfig([
-	{
-		name: 'node',
-		entry: ['src/index.ts'],
-		format: ['cjs'],
-		target: 'node',
-	},
-	{
-		name: 'browser',
-		entry: ['src/index.ts'],
-		format: ['esm', 'iife'],
-		target: 'browser',
-		outDir: "dist/browser",
-	},
-]);
-```
-
-### Package.json Configuration
-
-You can also include your bunup configuration directly in your `package.json` file using the `bunup` property:
-
-```json [package.json]
-{
-	"name": "my-package",
-	"version": "1.0.0",
-	"bunup": {
-		"entry": ["src/index.ts", "src/cli.ts"],
-		"target": "bun",
-	}
-}
-```
-
-This approach can be useful when you prefer keeping all project configuration in a single file.
-
-### JSON Schema
-
-Bunup provides a JSON schema at [https://bunup.dev/schema.json](https://bunup.dev/schema.json) for editor autocompletion and validation. You can enable autocomplete for the `bunup` field in your `package.json` by configuring VSCode:
-
-```json [.vscode/settings.json]
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["package.json"],
-      "url": "https://bunup.dev/schema.json"
-    }
-  ]
-}
-```
-
-This provides autocompletion, validation, and documentation when editing the bunup configuration in your package.json file.
-
-### Custom Configuration Path
-
-If you need to use a configuration file with a non-standard name or location, you can specify its path using the `--config` CLI option:
+To override the defaults or exclude certain entries, specify them explicitly:
 
 ```sh
-bunup --config ./configs/custom.bunup.config.ts
+bunx bunup src/index.ts src/plugins.ts
 ```
 
-This is particularly useful for projects with multiple build configurations or for separating build configs for different environments.
+See [Entry Points](/docs/guide/options#entry-points) for details.
 
 ## Watch Mode
 
-Bunup can watch your files for changes and rebuild automatically:
+Bunup can watch files for changes and rebuild automatically:
 
 ```sh
-bunup src/index.ts --watch
+bunx bunup --watch
 ```
 
-Or in package.json:
+Or configure it in `package.json`:
 
-```json [package.json] 5
+```json [package.json] {5}
 {
-	"name": "my-package",
-	"scripts": {
-		"build": "bunup src/index.ts",
-		"dev": "bunup src/index.ts --watch"
-	}
+  "name": "my-package",
+  "scripts": {
+    "build": "bunup",
+    "dev": "bunup --watch"
+  }
 }
 ```
 

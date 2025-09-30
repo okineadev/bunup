@@ -1,67 +1,39 @@
 # TypeScript Declarations
 
-Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, ensuring full type safety for consumers.
-
-Built from the ground up, Bunup includes [its own](https://github.com/bunup/typeroll) high-performance TypeScript declaration bundler. It's designed for maximum speed while offering advanced features like splitting and minification, producing minimal and clean declaration files.
+Bunup automatically generates TypeScript declaration files (`.d.ts`, `.d.mts`, or `.d.cts`) for your library based on your output format, with advanced features like declaration splitting.
 
 ## Prerequisites
 
 Enable `isolatedDeclarations` in your tsconfig:
 
-```json [tsconfig.json] 4
+```json [tsconfig.json] {4}
 {
-	"compilerOptions": {
-		"declaration": true,
-		"isolatedDeclarations": true
-	}
+  "compilerOptions": {
+    "declaration": true,
+    "isolatedDeclarations": true
+  }
 }
 ```
 
-Bunup leverages TypeScript's new modern [isolatedDeclarations](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations) feature to generate declaration files. This approach enforces strict discipline in your type exports—only well-defined, explicit types reach your public API. You get bulletproof type safety, fast declarations, and clear interfaces your users will love. It's like a TypeScript guardian angel for your library's public surface!
+Bunup uses TypeScript's new isolated declarations feature to generate type declarations quickly and accurately.
+
+Learn more about the benefits and why you need to enable this [here](https://arshadyaseen.com/writing/isolated-declarations).
 
 ## Basic
 
-If your entry points are TypeScript files, Bunup will automatically generate declaration files for them.
-
-## Custom Entry Points
-
-For more control, you can specify custom entry points for declarations:
-
-```typescript
-export default defineConfig({
-	entry: ['src/index.ts', 'src/cli.ts'],
-	dts: {
-		// Only generate declarations for index.ts
-		entry: ['src/index.ts'],
-	},
-});
-```
-
-### Using Glob Patterns
-
-Bunup supports glob patterns for both main entries and declaration file entries:
-
-```typescript
-export default defineConfig({
-	dts: {
-		entry: [
-			'src/public/**/*.ts',
-			'!src/public/dev/**/*'
-		]
-	}
-});
-```
-
-You can use:
-- Simple patterns like `src/**/*.ts` to include files
-- Exclude patterns starting with `!` to filter out specific files
-- Both for main entries and declaration entries
+Bunup automatically generates TypeScript declaration files for all TypeScript entry points that require them. Files that do not contain exports, or for which declarations are unnecessary, are skipped.
 
 ## Declaration Splitting
 
 Declaration splitting optimizes TypeScript `.d.ts` files when multiple entry points share types. Instead of duplicating shared types across declaration files, Bunup extracts them into shared chunk files that are imported where needed.
 
-```typescript
+::: code-group
+
+```sh [CLI]
+bunup --dts.splitting
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
 	dts: {
 		splitting: true,
@@ -69,21 +41,23 @@ export default defineConfig({
 });
 ```
 
+:::
+
 **Without splitting:**
 
 ```
 dist/
-├── index.d.ts         # ~45KB
-└── cli.d.ts           # ~40KB
+├── index.d.ts           # ~45KB
+└── utils.d.ts           # ~40KB
 ```
 
 **With splitting:**
 
 ```
 dist/
-├── index.d.ts         		  # ~15KB, imports from shared chunk
-├── cli.d.ts           		  # ~10KB, imports from shared chunk
-└── shared/chunk-abc123.d.ts  # ~30KB, shared types
+├── index.d.ts					# ~15KB, imports from shared chunk
+├── utils.d.ts					# ~10KB, imports from shared chunk
+└── shared/chunk-abc123.d.ts	# ~30KB, shared types
 ```
 
 The result is clean declarations with no duplicates, improved readability, and reduced bundle size.
@@ -97,7 +71,13 @@ Declaration splitting is enabled by default if code splitting is enabled.
 
 You can minify the generated declaration files to reduce their size:
 
-```typescript
+::: code-group
+
+```sh [CLI]
+bunup --dts.minify
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
 	dts: {
 		minify: true,
@@ -105,7 +85,9 @@ export default defineConfig({
 });
 ```
 
-When enabled, minification preserves public (exported) API names while minifying internal type names and removes documentation comments. This significantly reduces file size when bundle size is a priority and JSDoc comments aren't essential.
+:::
+
+Minifying TypeScript declarations is uncommon, but bunup supports it. When enabled, minification keeps public (exported) API names intact, shortens internal type names, and removes documentation comments. This can greatly reduce file size, which is useful if bundle size matters and you don't need JSDoc or readable type definitions for consumers.
 
 ### Example
 
@@ -129,6 +111,65 @@ type e<T>={[P in keyof T]?:e<T[P]>};interface t<T>{data:T;error?:string;meta?:Re
 ```
 
 
+## Custom Entry Points
+
+For more control, you can specify custom entry points for declarations:
+
+::: code-group
+
+```sh [CLI]
+# Single entry
+bunup src/index.ts src/utils.ts --dts.entry src/index.ts
+
+# Multiple entries
+bunup src/index.ts src/utils.ts src/types.ts --dts.entry src/index.ts,src/types.ts
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	entry: ['src/index.ts', 'src/utils.ts'],
+	dts: {
+		// Only generate declarations for index.ts
+		entry: ['src/index.ts'],
+	},
+});
+```
+
+:::
+
+### Using Glob Patterns
+
+Bunup supports glob patterns for both main entries and declaration file entries:
+
+::: code-group
+
+```sh [CLI]
+# Single glob pattern
+bunup --dts.entry "src/public/**/*.ts"
+
+# Multiple patterns (including exclusions)
+bunup --dts.entry "src/public/**/*.ts,!src/public/dev/**/*"
+```
+
+```typescript [bunup.config.ts]
+export default defineConfig({
+	dts: {
+		entry: [
+			'src/public/**/*.ts',
+			'!src/public/dev/**/*'
+		]
+	}
+});
+```
+
+:::
+
+You can use:
+- Simple patterns like `src/**/*.ts` to include files
+- Exclude patterns starting with `!` to filter out specific files
+- Both for main entries and declaration entries
+
+
 ## TypeScript Configuration
 
 You can specify a custom tsconfig file for declaration generation:
@@ -136,12 +177,12 @@ You can specify a custom tsconfig file for declaration generation:
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --preferred-tsconfig-path ./tsconfig.build.json
+bunup --preferred-tsconfig-path ./tsconfig.build.json
 ```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   preferredTsconfigPath: "./tsconfig.build.json",
 });
 ```
@@ -154,17 +195,13 @@ When generating declaration files, you might need to include type references fro
 
 ::: code-group
 
-```sh [CLI - all packages]
-bunup src/index.ts --resolve-dts
-```
-
-```sh [CLI - specific packages]
-bunup src/index.ts --resolve-dts=react,lodash
+```sh [CLI]
+# Enable resolving all external types
+bunup --dts.resolve
 ```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-      entry: ['src/index.ts'],
       dts: {
             // Enable resolving all external types
             resolve: true,
@@ -178,15 +215,26 @@ The `resolve` option helps when your TypeScript code imports types from external
 
 You can also specify which packages to resolve types for:
 
-```typescript
+::: code-group
+
+```sh [CLI]
+# Single package
+bunup --dts.resolve react
+
+# Multiple packages
+bunup --dts.resolve react,lodash,@types/node
+```
+
+```typescript [bunup.config.ts]
 export default defineConfig({
-	entry: ['src/index.ts'],
 	dts: {
 		// Only resolve types from these specific packages
 		resolve: ['react', 'lodash', /^@types\//],
 	},
 });
 ```
+
+:::
 
 ## Disabling Declaration Generation
 
@@ -195,12 +243,12 @@ While Bunup automatically generates declaration files for TypeScript entries, yo
 ::: code-group
 
 ```sh [CLI]
-bunup src/index.ts --dts=false
+bunup --no-dts
 ```
 
 ```ts [bunup.config.ts]
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: "src/index.ts",
   dts: false,
 });
 ```

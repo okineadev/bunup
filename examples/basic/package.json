@@ -1,0 +1,42 @@
+{
+	"name": "basic",
+	"description": "A typescript library",
+	"version": "0.14.9",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"module": "./dist/index.js",
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"scripts": {
+		"build": "bunup",
+		"dev": "bunup --watch"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.20",
+		"bunup": "^0.8.72",
+		"typescript": "^5.9.2"
+	},
+	"peerDependencies": {
+		"typescript": ">=4.5.0"
+	},
+	"peerDependenciesMeta": {
+		"typescript": {
+			"optional": true
+		}
+	},
+	"license": "MIT"
+}

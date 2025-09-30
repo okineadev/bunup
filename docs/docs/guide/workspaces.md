@@ -1,14 +1,13 @@
 # Bunup Workspaces
 
-Effortlessly manage multiple packages in monorepos with Bunup's workspace support. Define and build multiple packages with a single configuration file and command.
+Effortlessly manage **multiple packages in a monorepo** with Bunup’s built-in workspace support.  
+With a single configuration file and a single command, you can build all your packages at once.
 
-## Configuration Structure
+## Creating a Workspace Configuration
 
-### Creating a Workspace Configuration
+Define your workspace using the `defineWorkspace` function:
 
-Use the `defineWorkspace` function to define your monorepo structure:
-
-```typescript [bunup.config.ts]
+```ts [bunup.config.ts]
 import { defineWorkspace } from "bunup";
 
 export default defineWorkspace([
@@ -16,21 +15,28 @@ export default defineWorkspace([
 ]);
 ```
 
-### Package Configuration
+## Package Configuration
 
-Each package in your workspace requires:
+Each package requires three properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | Unique identifier for the package |
-| `root` | `string` | Relative path to the package directory |
-| `config` | `BunupConfig \| BunupConfig[]` | Build configuration(s) for this package |
+| Property | Type                           | Description                                                  |
+| -------- | ------------------------------ | ------------------------------------------------------------ |
+| `name`   | `string`                       | Unique identifier for the package                            |
+| `root`   | `string`                       | Path to the package directory, relative to the monorepo root |
+| `config` | `BunupConfig \| BunupConfig[]` | Optional build configuration(s) for this package             |
+
+👉 If you omit `config`, Bunup will use **defaults**:
+
+* ESM-only build
+* One of the [default entry points](/#default-entry-points) (e.g. `src/index.ts`)
+
+This means for most packages you don’t need any configuration at all.
 
 ## Basic Usage
 
-Here's a simple workspace with two packages:
+A minimal workspace with two packages:
 
-```typescript [bunup.config.ts]
+```ts [bunup.config.ts]
 import { defineWorkspace } from "bunup";
 
 export default defineWorkspace([
@@ -38,26 +44,26 @@ export default defineWorkspace([
     name: "core",
     root: "packages/core",
     config: {
-      entry: ["src/index.ts"],
+      entry: "src/index.ts",
       format: ["esm", "cjs"],
     },
   },
   {
     name: "utils",
     root: "packages/utils",
-    config: {
-      entry: ["src/index.ts"],
-      format: ["esm"],
-    },
+    // Uses default entry: src/index.ts
+    // Uses default format: esm
   },
 ]);
 ```
 
-## Using Shared Options
+Here, **`core`** has custom formats, while **`utils`** works out of the box with defaults.
 
-You can simplify configuration by using shared options:
+## Shared Options
 
-```typescript [bunup.config.ts]
+You can define **shared options** for all packages, reducing repetition:
+
+```ts [bunup.config.ts]
 import { defineWorkspace } from "bunup";
 
 export default defineWorkspace(
@@ -66,78 +72,48 @@ export default defineWorkspace(
       name: "core",
       root: "packages/core",
       config: {
-        format: ["esm", "cjs"], // Overrides shared format
+        format: ["esm"], // overrides shared format
       },
     },
     {
       name: "utils",
       root: "packages/utils",
-      // config is optional when using only shared options
+      // config is optional, shared options apply
     },
   ],
   {
-    // Shared configuration applied to all packages
-    entry: ["src/index.ts"],
-    format: ["esm"],
-    minify: true,
-    target: "node",
-  }
-);
-```
-
-When a package has multiple configurations, shared options will apply to all of them:
-
-```typescript [bunup.config.ts]
-export default defineWorkspace(
-  [
-    {
-      name: "web-package",
-      root: "packages/web",
-      config: [
-        {
-          name: "browser-esm",
-          format: ["esm"],
-          target: "browser",
-        },
-        {
-          name: "node-cjs",
-          format: ["cjs"],
-          target: "node",
-        },
-      ],
-    },
-  ],
-  {
-    // These shared options apply to both browser-esm and node-cjs configs
-    entry: ["src/index.ts"],
-    minify: true,
+    // Shared options
+    format: ["esm", "cjs"],
+    exports: true,
+    unused: true,
   }
 );
 ```
 
 ## Multiple Build Configurations
 
-You can define multiple build configurations for a single package by using an array:
+Each package can have multiple builds by passing an array:
 
-```typescript [bunup.config.ts]
+```ts [bunup.config.ts]
 import { defineWorkspace } from "bunup";
 
 export default defineWorkspace([
   {
-    name: "web-package",
+    name: "web",
     root: "packages/web",
     config: [
       {
-        name: "browser-esm",
-        entry: ["src/index.ts"],
-        format: ["esm"],
-        target: "browser",
+        entry: "src/index.ts",
+        name: "node",
+        format: "esm",
+        target: "node",
       },
       {
-        name: "node-cjs",
-        entry: ["src/index.ts"],
-        format: ["cjs"],
-        target: "node",
+        entry: "src/index.ts",
+        name: "browser",
+        format: ["esm", "iife"],
+        target: "browser",
+        outDir: "dist/browser",
       },
     ],
   },
@@ -145,69 +121,68 @@ export default defineWorkspace([
 ```
 
 ::: tip
-Use the `name` property within each config to easily identify different builds in logs.
+Use the `name` property inside each config to easily distinguish builds in logs.
 :::
 
 ## Path Resolution
 
-All paths in workspace configurations are resolved relative to each **package's root directory**:
+All paths in package configs are **relative to the package root**:
 
 ```
 myproject/
 ├── packages/
 │   ├── core/        <- package root
-│   │   ├── src/     <- entry points relative to this package
-│   │   └── dist/    <- output goes here
-│   └── utils/       <- another package root
+│   │   ├── src/     <- entries resolved here
+│   │   └── dist/    <- outputs here
+│   └── utils/
 ├── bunup.config.ts
 └── package.json
 ```
 
-For example, with this configuration:
+Example:
 
-```typescript
+```ts
 {
-  name: 'core',
-  root: 'packages/core',
+  name: "core",
+  root: "packages/core",
   config: {
-    entry: ['src/index.ts'],  // resolves to packages/core/src/index.ts
-    outDir: 'dist',           // outputs to packages/core/dist/
+    entry: "src/index.ts",  // resolves to packages/core/src/index.ts
+    outDir: "dist",         // outputs to packages/core/dist/
   },
 }
 ```
 
-::: tip Plugin Path Resolution
-When using plugins that accept path options (like the [`copy`](/docs/plugins/copy) plugin), those paths are also resolved relative to the package's root directory. For example, `copy(['assets'])` will copy from `packages/core/assets` when used in the `core` package configuration.
+::: tip Plugin Paths
+When using plugins (like [`copy`](/docs/builtin-plugins/copy)), paths are also resolved relative to the **package root**.
+For example, `copy("assets/**/*.svg")` in the `core` package will copy from `packages/core/assets`.
 :::
 
-## Build Packages
+## Building Packages
 
-To build all packages in your workspace:
-
-```sh
-bunup
-```
-
-### Watch Mode
-
-To automatically rebuild packages when files change:
+### Build all packages
 
 ```sh
-bunup --watch
+bunx bunup
 ```
 
-This single command watches and rebuilds all packages in your workspace.
-
-### Building Specific Packages
-
-To build only specific packages, use the `--filter` option with the package names (the `name` property defined in your workspace configuration):
+### Watch mode
 
 ```sh
-bunup --filter core,utils
-# or watch specific packages
-bunup --filter core,utils --watch
+bunx bunup --watch
 ```
 
-::: info
-Bunup do incremental builds in workspaces, meaning it will only rebuild packages that have changed.
+Bunup will watch **all packages** and rebuild only those that change.
+
+### Build specific packages
+
+Use the `--filter` option with package names:
+
+```sh
+bunx bunup --filter core,utils
+# or in watch mode
+bunx bunup --filter core,utils --watch
+```
+
+::: info Incremental Builds
+Workspaces are **incremental**: only changed packages are rebuilt.
 :::

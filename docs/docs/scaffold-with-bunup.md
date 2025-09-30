@@ -1,22 +1,29 @@
 # Scaffold with Bunup
 
-Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bun. Powered by Bunup - the fastest bundler available ⚡️.
+Quickly scaffold modern TypeScript and React libraries in just 10 seconds with Bunup.
 
 - 🚀 **Instant Setup**: Scaffold, code, edit README, and publish with a single command - with nothing to rename or configure
-- 📦 **Modern**: ESM/CJS formats, TypeScript declarations, and optional monorepo support
+- 📦 **Modern**: ESM by default, TypeScript declarations, and optional monorepo support
 - 🛠️ **DX First**: Integrated Bun-powered testing, Biome linting and formatting that just works out of the box
 - 🚢 **Publishing**: One-command releases with automatic semantic versioning, GitHub tags, and detailed release notes
 - ⚡️ **Mind-Blowing Speed**: Build times so fast they feel instantaneous - a library building experience you've never experienced before
+- ✨ **Best Practices**: Follows industry standards and modern development conventions out of the box
 
 ## Getting Started
 
 You can create a new project by using:
 
 ```sh
-bunx bunup@latest --new
+bunx @bunup/cli@latest create
 ```
 
-That's it! You can now start coding.
+You will be greeted with a few simple questions and that's it! You can now start coding.
+
+You'll choose between two variants:
+- **Basic**: Minimal setup with just Bunup config, perfect for building your own setup
+- **Full**: Complete modern library setup, just focus on code and publish
+
+If you selected `basic`, you can skip the next sections which is for those who selected `full` to learn more about the commands and how to release your package. If you selected `basic`, you set up these things yourself.
 
 ## Setup for Releases
 
@@ -35,40 +42,23 @@ That's it! You can now start coding.
 
 After completing the setup, here's how to use your project:
 
-### TypeScript Library Commands
-
 ```sh
-bun run dev        # Start development mode with automatic rebuilds
+bun run dev        # Start development mode
 bun run test       # Run test suite
 bun run lint       # Check code style and find problems
-bun run lint:fix   # Fix linting issues automatically
+bun run lint:fix   # Fix linting and formatting issues automatically
 bun run format:fix # Fix code formatting issues
 bun run tsc        # Type check TypeScript code
 bun run build      # Build production bundle
 ```
 
-### React Library Development
+### Development Mode
 
-React libraries have a special development workflow optimized for component development:
+The `bun run dev` command behaves differently based on your project type:
 
-```sh
-bun run dev        # Watch source files and rebuild library instantly
-bun run dev:test   # Start Next.js preview app at http://localhost:3000
-bun run lint       # Check code style and find problems
-bun run lint:fix   # Fix linting issues automatically
-bun run format:fix # Fix code formatting issues
-bun run tsc        # Type check TypeScript code
-bun run build      # Build production bundle
-```
+**React Library**: Launches a Bun + React preview app at `http://localhost:3000` where you can see your components in action.
 
-#### Full Development Mode
-
-For the ultimate development experience with React libraries:
-
-1. **Terminal 1**: Run `bun run dev` - Watches your source files and rebuilds the library instantly on any change
-2. **Terminal 2**: Run `bun run dev:test` - Starts a Next.js preview app at http://localhost:3000
-
-🔥 Instant reflection of changes in the live preview app
+**TypeScript Library**: Starts watch mode that automatically rebuilds your library whenever you make changes.
 
 ## CI/CD Workflows
 

@@ -5,45 +5,86 @@
 <div align="center">
 
   <!-- markdownlint-disable-next-line no-alt-text -->
+  ![Logo](docs/public/logo.svg)
 
-<p>
-<img alt="Logo" src="assets/bunup-kawaii-sticker.png" width="400">
-</p>
+  ![Bunup](assets/bunup-title.svg)
 
-[![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup) [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
+  [![NPM Version](https://img.shields.io/npm/v/bunup?logo=npm&logoColor=212121&label=version&labelColor=ffc44e&color=212121)](https://npmjs.com/package/bunup)
+  [![Built with Bun](https://img.shields.io/badge/Built_with-Bun-fbf0df?logo=bun&labelColor=212121)](https://bun.sh)
+  [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&labelColor=FAFAFA)](https://github.com/sponsors/arshad-yaseen)
 
-Bunup is the **blazing-fast build tool** for TypeScript libraries, designed for flawless developer experience and speed, **powered by Bun**. 
-
+  Bunup helps you ship TypeScript/React libraries faster with great DX — built on Bun.
 </div>
 <!-- markdownlint-restore -->
 
+## Performance
+
+Instant builds by design. With Bun’s native speed, builds and rebuilds are extremely quick, even in monorepos. Faster feedback loops, higher productivity, calmer flow.
+
+## 🚀 Quick Start
+
+Create a TypeScript file:
+
+```ts
+// src/index.ts
+export function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+Build it instantly:
+
+```bash
+bunx bunup
+```
+
+Outputs to `dist/` with ESM and `.d.ts` types.
+
+Need CommonJS too?
+
+```bash
+bunx bunup --format esm,cjs
+```
+
+Want to generate and sync package exports automatically?
+
+```bash
+bunx bunup --exports
+```
+
+## Scaffold
+
+Spin up a modern, ready-to-publish TypeScript or React component library (or a basic starter) in ~10 seconds:
+
+```bash
+bunx @bunup/cli@latest create
+```
+
+See more in [Scaffold with Bunup](./docs/scaffold-with-bunup.md).
+
 ## Features
 
-- ⚡ **Blazing Fast**: Lightning-fast builds and instant rebuilds.
-- 📝 **Top-Notch TypeScript Declarations**: Clean, minimal, accurate `.d.ts` files generated automatically.
-- 📦 **ESM by Default**: Modern ESM output by default.
-- 🪓 **Declaration Splitting**: Splits shared types for smaller, cleaner declaration bundles.
-- 🔥 **Declaration Minification**: Aggressively minifies and shortens type names while preserving public API—like code bundling for TypeScript declarations.
-- 🔋 **Batteries Included**: Auto-generates package exports, detects unused dependencies and exports, and more.
-- 🚀 **Zero-Config Simplicity**: Preconfigured for productivity—just code and build.
-- 🏗️ **[Workspace](https://bunup.dev/docs/guide/workspaces) Ready**: Builds multiple packages from one config and command.
-- 🔄 **Tsup Familiarity**: Familiar CLI and config for easy migration from tsup.
+- ⚡ **Instant builds** — lightning-fast by default
+- 🎨 **CSS support out of the box** — import CSS directly, with built-in CSS Modules support.
+- 📝 **TypeScript declarations** — clean, accurate `.d.ts` files
+- 🪓 **[Declaration splitting](https://bunup.dev/docs/guide/typescript-declarations#declaration-splitting)** — smaller, cleaner type bundles
+- 🔋 **Batteries included** — auto-exports, unused dependency detection, and more
+- 🏗️ **[Workspace-ready](https://bunup.dev/docs/guide/workspaces)** — build multiple packages from one config and one command
 
-## 📚 Documentation
-
-To get started, visit the [documentation](https://bunup.dev).
+For more, see the full documentation: https://bunup.dev
 
 ## ❤️ Contributing
 
-For guidelines on contributing, please read the [contributing guide](../../CONTRIBUTING.md).
-
-We welcome contributions from the community to enhance Bunup's capabilities and make it even more powerful.
+We welcome contributions! Please read the [contributing guide](CONTRIBUTING.md).
 
 ![Contributors](https://contributors-table.vercel.app/image?repo=bunup/bunup&width=50&columns=15)
 
-![Sponsors](https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg)
-
 <div align="center">
 
-  ![______ 🐈‍⬛ _____________](assets/cat-footer.svg)
+  <img src="https://cdn.jsdelivr.net/gh/arshad-yaseen/static/sponsors.svg" alt="Sponsors" />
+
+  <br /><br />
+
+  <img src="assets/cat-footer.svg" alt="______ 🐈‍⬛ _____________" />
+
 </div>

@@ -25,11 +25,14 @@ jobs:
                           bun-version: latest
                   - run: bun install
                   - run: bun run build
-                  - run: npx changelogithub
+                  - run: bunx changelogithub
                     continue-on-error: true
                     env:
                           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  - run: bun run publish:ci
+                  - run: |
+                      for dir in packages/*/; do
+                        (cd "$dir" && bun publish --access public)
+                      done
                     env:
                           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
                           NPM_CONFIG_PROVENANCE: true

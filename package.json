@@ -1,106 +1,34 @@
 {
-	"name": "bunup",
-	"description": "⚡ A blazing-fast build tool for your libraries built with Bun.",
-	"version": "0.9.1",
-	"type": "module",
-	"files": [
-		"dist"
-	],
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			}
-		},
-		"./plugins": {
-			"import": {
-				"types": "./dist/plugins.d.ts",
-				"default": "./dist/plugins.js"
-			}
-		}
-	},
-	"license": "MIT",
-	"author": "Arshad Yaseen <m@arshadyaseen.com> (https://arshadyaseen.com)",
-	"maintainers": [
-		{
-			"name": "Arshad Yaseen",
-			"email": "m@arshadyaseen.com",
-			"url": "https://arshadyaseen.com"
-		}
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/arshad-yaseen/bunup.git"
-	},
-	"funding": "https://github.com/sponsors/arshad-yaseen",
-	"homepage": "https://bunup.dev",
-	"keywords": [
-		"bun",
-		"bunup",
-		"bun-bundler"
-	],
-	"bin": {
-		"bunup": "dist/cli/index.js"
-	},
-	"dependencies": {
-		"@clack/prompts": "^0.10.1",
-		"chokidar": "^4.0.3",
-		"coffi": "^0.1.31",
-		"fast-deep-equal": "^3.1.3",
-		"giget": "^2.0.0",
-		"picocolors": "^1.1.1",
-		"replace-in-file": "^8.3.0",
-		"tinyexec": "^1.0.1",
-		"tree-kill": "^1.2.2",
-		"typeroll": "^0.6.22"
-	},
+	"name": "bunup-monorepo",
 	"devDependencies": {
-		"@babel/types": "^7.28.2",
-		"@biomejs/biome": "2.0.0",
-		"@types/bun": "^1.2.19",
-		"bumpp": "^10.2.2",
-		"husky": "^9.1.7",
-		"lightningcss": "^1.30.1",
-		"lint-staged": "^15.5.2",
-		"typescript": "^5.9.2"
-	},
-	"peerDependencies": {
-		"typescript": ">=4.5.0",
-		"lightningcss": ">=1.17.0"
-	},
-	"peerDependenciesMeta": {
-		"typescript": {
-			"optional": true
-		},
-		"lightningcss": {
-			"optional": true
-		}
+		"@biomejs/biome": "2.2.0",
+		"@types/bun": "^1.2.21",
+		"bumpp": "^10.2.3",
+		"simple-git-hooks": "^2.13.1"
 	},
 	"scripts": {
-		"build": "bunx bunup@latest",
+		"prepublishOnly": "bun run build",
+		"postinstall": "cd packages/shared && bunx bunup@latest && cd ../dts && bunx bunup@latest",
+		"build": "bun packages/bunup/src/cli/index.ts",
 		"build:docs": "bun run --cwd docs build",
-		"dev": "bunx bunup@latest --watch",
+		"dev": "bun packages/bunup/src/cli/index.ts --watch",
 		"dev:docs": "bun run --cwd docs dev",
 		"format": "biome format .",
 		"format:fix": "biome format --write .",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"prepare": "husky",
 		"test": "bun test",
-		"test-build": "bun run --cwd tests build",
+		"test:build": "bun run --cwd packages/bunup/test build",
 		"tsc": "tsc --noEmit",
-		"publish:ci": "bun publish --access public --no-git-checks",
-		"release": "bumpp"
+		"release": "bumpp -r --commit --push --tag",
+		"prepare": "bun simple-git-hooks"
 	},
-	"lint-staged": {
-		"*": "bun run format:fix && git add .",
-		"src/**/*.(m|c)?(j|t)s": "bun run tsc"
+	"simple-git-hooks": {
+		"pre-commit": "bun run lint"
 	},
 	"workspaces": [
 		"docs",
-		"tests"
+		"examples/**",
+		"packages/**"
 	]
 }
